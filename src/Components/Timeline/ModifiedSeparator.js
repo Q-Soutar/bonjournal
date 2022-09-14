@@ -69,7 +69,7 @@ const ModifiedSeparator = function (props) {
                             <DeleteForeverIcon />
                         </IconButton>
                         <IconButton>
-                            <EditIcon />
+                            <EditIcon onClick={props.editModeToggle} />
                         </IconButton>
                     </Box>
                 ) : (

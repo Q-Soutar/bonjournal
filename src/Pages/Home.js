@@ -168,11 +168,6 @@ function Home() {
 
     return (
         <div>
-            <button onClick={logoutHandler}>Logout</button>
-            <h1>Authentication</h1>
-            <p>{authCtx.token}</p>
-            <p>{`${isLoggedIn}`}</p>
-            {isLoggedIn && <div>Conditional Text</div>}
             <Timeline
                 entries={entries}
                 deleteEntry={deleteEntryHandler}

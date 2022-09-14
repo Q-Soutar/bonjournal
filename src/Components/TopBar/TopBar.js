@@ -18,6 +18,7 @@ import { useContext, useState } from "react";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Logout } from "@mui/icons-material";
 import AuthContext from "../../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 // Since the predfined 'large' fails to work in this situation I've opted to just yoink the h4 or h3 fontsize (I'm undecided still). It's close enough and I can centrally manage it from the theme easily. Might create a dedicated key for this later but for now I can't be bothered.
 const MenuContainer = styled(Box)(({ theme }) => ({
@@ -49,6 +50,7 @@ const TopBar = function () {
     const authCtx = useContext(AuthContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = !!anchorEl;
+    const navigate = useNavigate();
     const handleMenuOpen = function (e) {
         setAnchorEl(e.currentTarget);
     };

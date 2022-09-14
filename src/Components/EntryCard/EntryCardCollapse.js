@@ -7,12 +7,13 @@ const StyledCardContent = styled(CardContent)({
         wordWrap: "break-word"
     }
 });
-const EntryCardCollapse = function ({ text, expanded }) {
+const EntryCardCollapse = function ({ text, expanded, controls }) {
     return (
         <Collapse in={expanded} timeout="auto" unmountOnExit>
             <StyledCardContent s={{ paddingBottom: 0 }}>
                 <Typography paragraph>{text}</Typography>
             </StyledCardContent>
+            {controls}
         </Collapse>
     );
 };

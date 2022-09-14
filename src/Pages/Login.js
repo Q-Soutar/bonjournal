@@ -11,6 +11,8 @@ const Login = function () {
     const [password, setPassword] = useState("");
 
     useEffect(() => {
+        console.log("Login page mount");
+        console.log(`<Login/> -> authCtx.token: ${authCtx.token}`);
         if (authCtx.token) navigate("/home");
     }, [authCtx.token]);
     const emailHandler = function (e) {
@@ -26,7 +28,6 @@ const Login = function () {
             () => {
                 setEmail("");
                 setPassword("");
-                navigate("/home");
             },
             () => {
                 console.log("Error -- credentials not accepted");

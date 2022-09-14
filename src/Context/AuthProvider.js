@@ -16,6 +16,7 @@ import {
     startSession,
     logout
 } from "../Utils/Auth";
+import { useNavigate } from "react-router-dom";
 
 const signInBaseURL = "https://identitytoolkit.googleapis.com/v1/";
 const refreshBaseURL = "https://securetoken.googleapis.com/v1/";
@@ -37,14 +38,19 @@ const AuthProvider = function (props) {
     const [token, setToken] = useState(null);
     const [refreshToken, setRefreshToken] = useState(null);
     const [userID, setUserID] = useState(null);
-    const setAuth = function ({
-        token = null,
-        refreshToken = null,
-        userID = null
-    }) {
-        setToken(token);
-        setRefreshToken(refreshToken);
-        setUserID(userID);
+    const navigate = useNavigate();
+    const setAuth = function (tokenData) {
+        if (tokenData) {
+            const { token, refreshToken, userID } = tokenData;
+
+            setToken(token);
+            setRefreshToken(refreshToken);
+            setUserID(userID);
+            return;
+        }
+        setToken(null);
+        setRefreshToken(null);
+        setUserID(null);
     };
 
     useEffect(() => {
@@ -58,6 +64,7 @@ const AuthProvider = function (props) {
                 .then((token) => {
                     startSession(token, setAuth);
                     resolve(true);
+                    navigate("/home");
                 })
                 .catch((err) => {
                     reject(false);
@@ -65,7 +72,10 @@ const AuthProvider = function (props) {
         });
     };
     const logoutHandler = function () {
-        logout();
+        setAuth();
+        logout().then((tokensCleared) => {
+            if (tokensCleared) navigate("/");
+        });
     };
 
     const sessionInitHandler = function () {

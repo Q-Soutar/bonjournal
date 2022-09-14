@@ -1,3 +1,9 @@
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import CloseIcon from "@mui/icons-material/Close";
+import { IconButton } from "@mui/material";
+
 const CardControls = function ({
     cardMode = "DISPLAY",
     deleteHandler = () => {},
@@ -9,15 +15,25 @@ const CardControls = function ({
         <div>
             {cardMode !== "DISPLAY" && (
                 <div>
-                    <button onClick={submitHandler}>Save</button>
-                    <button onClick={cancelHandler}>Cancel</button>
+                    <IconButton onClick={submitHandler}>
+                        <SaveIcon />
+                    </IconButton>
+                    <IconButton onClick={cancelHandler}>
+                        <CloseIcon />
+                    </IconButton>
+                    {/* <button onClick={submitHandler}>Save</button> */}
+                    {/* <button onClick={cancelHandler}>Cancel</button> */}
                 </div>
             )}
             {cardMode === "DISPLAY" && (
-                <button onClick={editModeToggle}>Edit</button>
+                <IconButton onClick={editModeToggle}>
+                    <EditIcon />
+                </IconButton>
             )}
             {cardMode !== "CREATE" && (
-                <button onClick={deleteHandler}>Delete</button>
+                <IconButton onClick={deleteHandler}>
+                    <DeleteForeverIcon />
+                </IconButton>
             )}
         </div>
     );

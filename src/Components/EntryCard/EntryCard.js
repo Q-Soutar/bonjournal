@@ -66,6 +66,8 @@ const EntryCard = function ({
     // Submit Functions
     const submitHandler = function () {
         submitFunction(entryState);
+        // This should probably be changed so that it doesn't invoke the edit toggle.
+        // The expanded variable might need tinkering?
         cancelHandler();
     };
     // Delete
@@ -88,7 +90,19 @@ const EntryCard = function ({
                 cardMode={localCardMode}
                 handleEntryEdits={handleFieldEdits}
             />
-            <EntryCardCollapse text={text} expanded={expanded} />
+            <EntryCardCollapse
+                text={text}
+                expanded={expanded}
+                controls={
+                    <CardControls
+                        cardMode={localCardMode}
+                        deleteHandler={deleteHandler}
+                        submitHandler={submitHandler}
+                        editModeToggle={editModeToggle}
+                        cancelHandler={cancelHandler}
+                    />
+                }
+            />
             {entryDebug && (
                 <div>
                     <CardDate date={date} cardMode={localCardMode} />
@@ -109,13 +123,6 @@ const EntryCard = function ({
                     <CardID uuid={uuid} cardMode={localCardMode} />
                 </div>
             )}
-            <CardControls
-                cardMode={localCardMode}
-                deleteHandler={deleteHandler}
-                submitHandler={submitHandler}
-                editModeToggle={editModeToggle}
-                cancelHandler={cancelHandler}
-            />
         </StyledCard>
     );
 };

@@ -6,10 +6,13 @@ export const dbInitEntries = function (userID, token, callback) {
     const userKey = `/${userID}`;
     const auth = `.json?auth=${token}`;
     const dbCallURL = `${DB_URL_BASE}${DB_ENTRIES_TLKEY}${userKey}${auth}`;
+    console.log(`Database.js -> dbInitEntries() -> userID: ${userID}`);
+    console.log(`Database.js -> dbInitEntries() -> token: ${token}`);
+    console.log(`Database.js -> dbInitEntries() -> callback: ${callback}`);
     fetch(dbCallURL)
         .then((res) => res.json())
         .then((entries) => {
-            if (entries !== {} && entries !== []) {
+            if (entries !== {} && entries !== [] && entries !== undefined) {
                 const newEntries = Object.keys(entries).map((key) => {
                     return {
                         ...entries[key],

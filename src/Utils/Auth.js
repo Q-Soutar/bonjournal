@@ -154,6 +154,7 @@ export const authInit = function (setAuth) {
 };
 
 export const startSession = function (token, setAuth) {
+    console.log(token);
     setAuth(token);
     storeToken(token);
     // autoRefresh(, setAuth);
@@ -233,22 +234,26 @@ export const employRefreshToken = function (refreshToken) {
         }
     })
         .then((res) => {
-            const data = res.json();
-            // Check if a valid token was returned
+            return res.json();
+            // Attempted merging this with the .then() below, but that went haywire due to the async part of the res.json() function. I couldn've done a nested .then() but that seemed exorbitantly messy.
+        })
+        .then((data) => {
+            console.log(`employRefreshToken() -> .then().then() -> data: `);
+            console.log(data);
             return new Promise(function (resolve, reject) {
                 // autoRefresh(data.refresh_token, data.expiresIn);
                 // If valid
                 // Return promise true
-                if (res.ok)
-                    resolve({
-                        token: data.idToken,
-                        refreshToken: data.refreshToken,
-                        expiry: data.expiresIn, // Uncertain longterm about using this but keeping it in the code for now if I do end up strongly needing it
-                        userID: data.localId
-                    });
+                // The docs for this actually get the payload completely wrong, sporting not only inaccurate casing, but *inaccurate field names*
+                resolve({
+                    token: data.id_token,
+                    refreshToken: data.refresh_token,
+                    expiry: data.expires_in, // Uncertain longterm about using this but keeping it in the code for now if I do end up strongly needing it
+                    userID: data.user_id
+                });
                 // If invalid
                 // Return promise login error
-                if (!res.ok) reject(new Error(data));
+                // if (!res.ok) reject(new Error(data));
             });
         })
         .catch((err) => {
@@ -279,8 +284,9 @@ export const login = function (email, password) {
             return storeToken(token);
         })
         .then(() => {
-            // Redirect to home
-            // redirect logic here
+            return new Promise((resolve, reject) => {
+                resolve(true);
+            });
         })
         .catch((err) => {
             // If invalid
@@ -296,4 +302,7 @@ export const logout = function () {
     // Clear autoRefresh
     if (refreshTimer) clearTimeout(refreshTimer);
     // Redirect to login page
+    return new Promise((resolve, reject) => {
+        resolve(true);
+    });
 };
