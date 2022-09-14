@@ -1,6 +1,6 @@
 import { TextField, Typography, Button } from "@mui/material";
 import { Box } from "@mui/system";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AuthContext from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,9 @@ const Login = function () {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    useEffect(() => {
+        if (authCtx.token) navigate("/home");
+    }, [authCtx.token]);
     const emailHandler = function (e) {
         setEmail(e.target.value);
     };

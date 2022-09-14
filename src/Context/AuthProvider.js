@@ -2,15 +2,19 @@
 import { setRef } from "@mui/material";
 import { useEffect, useState } from "react";
 import AuthContext from "./AuthContext";
-import { storeToken, getStoredTokens, clearTokens } from "../Utils/Cookies";
+import {
+    storeToken,
+    getStoredTokens,
+    clearStoredTokens
+} from "../Utils/Cookies";
 import {
     getNewToken,
     sessionInit,
     refreshSession,
     autoRefresh,
-    promAuthInit,
-    promStoreToken,
-    startSession
+    authInit,
+    startSession,
+    logout
 } from "../Utils/Auth";
 
 const signInBaseURL = "https://identitytoolkit.googleapis.com/v1/";
@@ -33,7 +37,6 @@ const AuthProvider = function (props) {
     const [token, setToken] = useState(null);
     const [refreshToken, setRefreshToken] = useState(null);
     const [userID, setUserID] = useState(null);
-    console.log();
     const setAuth = function ({
         token = null,
         refreshToken = null,
@@ -45,26 +48,24 @@ const AuthProvider = function (props) {
     };
 
     useEffect(() => {
-        promAuthInit(setAuth);
-    }, [setAuth]);
+        authInit(setAuth);
+    }, []);
 
     const loginHandler = function (email, password) {
         return new Promise((resolve, reject) => {
+            console.log(`loginHandler() ----> Retrieving token`);
             getNewToken(email, password)
                 .then((token) => {
                     startSession(token, setAuth);
                     resolve(true);
                 })
                 .catch((err) => {
-                    console.log("Authentication error");
-                    console.log(err);
                     reject(false);
                 });
         });
     };
     const logoutHandler = function () {
-        clearTokens();
-        if (refreshTimer) clearTimeout(refreshTimer); // The if might be redundant but I'm doing it for safety for the time being.
+        logout();
     };
 
     const sessionInitHandler = function () {

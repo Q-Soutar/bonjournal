@@ -1,5 +1,6 @@
 import Tag from "./Tag";
 import { useState } from "react";
+import { Box } from "@mui/system";
 
 const ENTER_KEY_CODE = 13;
 
@@ -49,7 +50,6 @@ const TagDisplay = function ({ tags, handleEntryEdits, cardMode }) {
     };
     return (
         <div>
-            <h3>Tags: </h3>
             {cardMode !== "DISPLAY" && (
                 <input
                     value={tagField}
@@ -57,17 +57,19 @@ const TagDisplay = function ({ tags, handleEntryEdits, cardMode }) {
                     onKeyDown={addTag}
                 />
             )}
-            {tagsExist &&
-                localTags.map((tag) => {
-                    return (
-                        <Tag
-                            tag={tag}
-                            key={tag}
-                            cardMode={cardMode}
-                            deleteTagHandler={deleteTagHandler}
-                        />
-                    );
-                })}
+            <Box sx={{ display: "flex", flexDirection: "row" }}>
+                {tagsExist &&
+                    localTags.map((tag) => {
+                        return (
+                            <Tag
+                                tag={tag}
+                                key={tag}
+                                cardMode={cardMode}
+                                deleteTagHandler={deleteTagHandler}
+                            />
+                        );
+                    })}
+            </Box>
         </div>
     );
 };

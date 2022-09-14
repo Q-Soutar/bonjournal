@@ -1,6 +1,7 @@
 import { useState } from "react";
 import EntryCard from "../EntryCard/EntryCard";
 import TimelineEnd from "./TimelineEnd";
+import TimelineEntry from "./TimelineEntry";
 
 const Timeline = function (props) {
     if (props.entries !== []) {
@@ -8,7 +9,7 @@ const Timeline = function (props) {
             <div>
                 {props.entries.map((entry) => {
                     return (
-                        <EntryCard
+                        <TimelineEntry
                             entry={entry}
                             deleteEntry={props.deleteEntry}
                             submitFunction={props.editEntry}
