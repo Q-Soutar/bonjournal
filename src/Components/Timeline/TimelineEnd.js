@@ -81,8 +81,6 @@ const TimelineEnd = function ({
                         startCardMode={"CREATE"}
                         cancelToggle={createEntryToggle}
                         expanded={true}
-                        // toggleExpand={toggleExpand}
-                        cancelToggle={createEntryToggle}
                     />
                 </TimelineContent>
             )}
