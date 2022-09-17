@@ -11,6 +11,7 @@ import {
 import { v4 as uuid } from "uuid";
 import Timeline from ".././Components/Timeline/Timeline";
 import EntryCard from "../Components/EntryCard/EntryCard";
+import { Button } from "@mui/material";
 import {
     BrowserRouter as Router,
     Routes,
@@ -40,6 +41,10 @@ function Home() {
     const createEntryToggle = function () {
         setCreateEntryMode(!createEntryMode);
     };
+    const timelineInit = function (entries) {
+        setEntries(entries);
+        document.getElementById("end").scrollIntoView();
+    };
 
     const isLoggedIn = !!authCtx.token;
 
@@ -50,10 +55,19 @@ function Home() {
         newEntry.date = Date.now();
         setLocation()
             .then((pos) => {
+                console.log(
+                    `<Home/> -> createEntryHandler() -> setLocation().then() -> Location received`
+                );
                 newEntry.location = {
                     lat: pos.coords.latitude,
                     long: pos.coords.longitude
                 };
+                console.log(
+                    `<Home/> -> createEntryHandler() -> setLocation().then() -> Location set`
+                );
+                console.log(
+                    `<Home/> -> createEntryHandler() -> setLocation().then() -> Sending new entry to DB`
+                );
                 dbCreateEntry(
                     newEntry,
                     authCtx.userID,
@@ -61,6 +75,10 @@ function Home() {
                     setEntries,
                     dbInitEntries
                 );
+                console.log(
+                    `<Home/> -> createEntryHandler() -> setLocation().then() -> DB call initiated, reverting createEntryMode state`
+                );
+                createEntryToggle();
             })
             .catch((err) => console.log(err));
     };
@@ -101,6 +119,9 @@ function Home() {
 
     const editEntryHandler = function (editedEntry) {
         // Identify altered fields, exclude the rest
+        console.log(`<Home/> -> editEntryHandler() -> function called`);
+        console.log(`<Home/> -> editEntryHandler() -> editedEntry: `);
+        console.log(editedEntry);
         const oldEntry = entries.find(
             (entry) => entry.uuid === editedEntry.uuid
         );
@@ -143,6 +164,7 @@ function Home() {
     };
 
     const deleteEntryHandler = function (entryID) {
+        console.log(`<Home/> -> deleteEntryHandler() -> function called`);
         dbDeleteEntry(
             authCtx.userID,
             authCtx.token,
@@ -158,12 +180,13 @@ function Home() {
     };
 
     const initApp = function () {
-        dbInitEntries(authCtx.userID, authCtx.token, setEntries);
+        dbInitEntries(authCtx.userID, authCtx.token, timelineInit);
     };
 
     useEffect(() => {
         if (authCtx.token) initApp();
         if (!authCtx.token) navigate("/");
+        document.getElementById("end").scrollIntoView();
     }, []);
 
     return (
@@ -173,18 +196,21 @@ function Home() {
                 deleteEntry={deleteEntryHandler}
                 editEntry={editEntryHandler}
                 createEntryMode={createEntryMode}
+                createEntryHandler={createEntryHandler}
+                createEntryToggle={createEntryToggle}
                 setCreateMode={setCreateEntryMode}
             />
-            {!createEntryMode && (
-                <button onClick={createEntryToggle}>Create Entry</button>
+            {/* {!createEntryMode && (
+                <Button onClick={createEntryToggle}>Create Entry</Button>
             )}
             {createEntryMode && (
                 <EntryCard
                     submitFunction={createEntryHandler}
                     startCardMode={"CREATE"}
                     cancelToggle={createEntryToggle}
+                    expanded={true}
                 />
-            )}
+            )} */}
         </div>
     );
 }

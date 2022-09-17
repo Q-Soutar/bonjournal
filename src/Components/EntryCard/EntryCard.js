@@ -28,12 +28,15 @@ const StyledCard = styled(Card)(({ theme, expanded }) => ({
 // Expects a mode variable, which can be one of: "display", "edit", and "create"
 const EntryCard = function ({
     submitFunction = () => {},
-    deleteEntry = () => {},
+    deleteEntry = () => {
+        console.log(`<EntryCard/> -> default deleteEntry() handler function`);
+    },
     entry = {},
     cancelToggle = () => {},
     startCardMode = "DISPLAY",
     expanded,
-    toggleExpand
+    toggleExpand,
+    createEntryHandler
 }) {
     // ? Maybe relocate this to the timeline entry?
     // ? It's going to take a lot of finagling to untangle all the state stuff with this
@@ -68,31 +71,32 @@ const EntryCard = function ({
         submitFunction(entryState);
         // This should probably be changed so that it doesn't invoke the edit toggle.
         // The expanded variable might need tinkering?
-        cancelHandler();
+        setLocalCardMode("DISPLAY");
     };
     // Delete
     const deleteHandler =
-        localCardMode === "create"
+        localCardMode === "CREATE"
             ? () => {}
             : function () {
                   deleteEntry(uuid);
               };
-
     return (
         <StyledCard
             expanded={expanded}
-            onClick={toggleExpand}
             variant="outlined"
+            onClick={localCardMode === "DISPLAY" ? toggleExpand : undefined}
         >
             <EntryCardHeader
-                entry={entry}
+                entry={entryState}
                 expanded={expanded}
                 cardMode={localCardMode}
                 handleEntryEdits={handleFieldEdits}
             />
             <EntryCardCollapse
-                text={text}
+                text={entryState.text}
                 expanded={expanded}
+                handleFieldEdits={handleFieldEdits}
+                cardMode={localCardMode}
                 controls={
                     <CardControls
                         cardMode={localCardMode}
@@ -100,6 +104,7 @@ const EntryCard = function ({
                         submitHandler={submitHandler}
                         editModeToggle={editModeToggle}
                         cancelHandler={cancelHandler}
+                        createEntryHandler={createEntryHandler}
                     />
                 }
             />

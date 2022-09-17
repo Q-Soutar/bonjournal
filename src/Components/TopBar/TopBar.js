@@ -70,8 +70,8 @@ const TopBar = function () {
                     <IconButton>
                         <SettingsIcon />
                     </IconButton>
-                    <IconButton>
-                        <AccountCircleIcon onClick={handleMenuOpen} />
+                    <IconButton onClick={handleMenuOpen}>
+                        <AccountCircleIcon />
                     </IconButton>
                     <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
                         <MenuItem key="logout" onClick={logoutHandler}>

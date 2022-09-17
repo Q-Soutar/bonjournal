@@ -11,8 +11,8 @@ const Login = function () {
     const [password, setPassword] = useState("");
 
     useEffect(() => {
-        console.log("Login page mount");
-        console.log(`<Login/> -> authCtx.token: ${authCtx.token}`);
+        // console.log("Login page mount");
+        // console.log(`<Login/> -> authCtx.token: ${authCtx.token}`);
         if (authCtx.token) navigate("/home");
     }, [authCtx.token]);
     const emailHandler = function (e) {
@@ -45,12 +45,12 @@ const Login = function () {
             alignItems="center"
             marginTop="25vw"
         >
-            <Typography header1 display="flex">
+            <Typography header1="true" display="flex">
                 Please login
             </Typography>
             <br></br>
             <TextField
-                outlined
+                outlined="true"
                 label="Email Address"
                 display="flex"
                 onChange={emailHandler}
@@ -58,7 +58,7 @@ const Login = function () {
             />
             <br></br>
             <TextField
-                outlined
+                outlined="true"
                 label="Password"
                 type="password"
                 display="flex"

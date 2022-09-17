@@ -1,5 +1,6 @@
 // Material IU imports
 import { CardContent, Typography, Collapse, styled } from "@mui/material";
+import CardText from "./CardFields/CardText";
 
 const StyledCardContent = styled(CardContent)({
     paddingBottom: "-10px",
@@ -7,11 +8,21 @@ const StyledCardContent = styled(CardContent)({
         wordWrap: "break-word"
     }
 });
-const EntryCardCollapse = function ({ text, expanded, controls }) {
+const EntryCardCollapse = function ({
+    text,
+    expanded,
+    controls,
+    cardMode,
+    handleFieldEdits
+}) {
     return (
         <Collapse in={expanded} timeout="auto" unmountOnExit>
             <StyledCardContent s={{ paddingBottom: 0 }}>
-                <Typography paragraph>{text}</Typography>
+                <CardText
+                    text={text}
+                    cardMode={cardMode}
+                    handleFieldEdits={handleFieldEdits}
+                />
             </StyledCardContent>
             {controls}
         </Collapse>

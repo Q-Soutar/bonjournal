@@ -46,10 +46,9 @@ const TagDisplay = function ({ tags, handleEntryEdits, cardMode }) {
         //     console.error("Tag limit exceeded");
         // }
         // * Stops it from doing a form submit on enter. Tried putting it at the top, but this prevented any typing from happening.
-        e.preventDefault();
     };
     return (
-        <div>
+        <Box>
             {cardMode !== "DISPLAY" && (
                 <input
                     value={tagField}
@@ -70,7 +69,7 @@ const TagDisplay = function ({ tags, handleEntryEdits, cardMode }) {
                         );
                     })}
             </Box>
-        </div>
+        </Box>
     );
 };
 

@@ -13,7 +13,8 @@ const StyledTimelineEntry = styled(TimelineItem)(({ theme }) => ({
     flex: "0 0 auto",
     "& .MuiTimelineOppositeContent-root": {
         flex: "0 0 0.5vw",
-        maxWidth: "50px"
+        maxWidth: "50px",
+        marginRight: "1vw"
     },
     "& .MuiTimelineContent-root": {
         paddingTop: 25,
@@ -45,6 +46,7 @@ const TimelineEntry = function ({ entry, deleteEntry, editEntry }) {
                     startCardMode={"DISPLAY"}
                     expanded={expanded}
                     toggleExpand={toggleExpand}
+                    deleteEntry={deleteEntry}
                 />
             </TimelineContent>
         </StyledTimelineEntry>

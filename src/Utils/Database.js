@@ -5,20 +5,33 @@ const DB_ENTRIES_TLKEY = "/entries";
 export const dbInitEntries = function (userID, token, callback) {
     const userKey = `/${userID}`;
     const auth = `.json?auth=${token}`;
-    const dbCallURL = `${DB_URL_BASE}${DB_ENTRIES_TLKEY}${userKey}${auth}`;
-    console.log(`Database.js -> dbInitEntries() -> userID: ${userID}`);
-    console.log(`Database.js -> dbInitEntries() -> token: ${token}`);
-    console.log(`Database.js -> dbInitEntries() -> callback: ${callback}`);
+    const orderBy = `&orderBy="date"`;
+    const startTime = Date.now() - 30 * 24 * 60 * 60;
+    // const startAt = `&startAt=${startTime}`;
+    const limitToFirst = `&limitToFirst=25`;
+    // const dbCallURL = `${DB_URL_BASE}${DB_ENTRIES_TLKEY}${userKey}${auth}${orderBy}${startAt}`;
+    const dbCallURL = `${DB_URL_BASE}${DB_ENTRIES_TLKEY}${userKey}${auth}${orderBy}${limitToFirst}`;
+    // const dbCallURL = `${DB_URL_BASE}${DB_ENTRIES_TLKEY}${userKey}${auth}${orderBy}`;
+    // console.log(`Database.js -> dbInitEntries() -> userID: ${userID}`);
+    // console.log(`Database.js -> dbInitEntries() -> token: ${token}`);
+    // console.log(`Database.js -> dbInitEntries() -> callback: ${callback}`);
     fetch(dbCallURL)
         .then((res) => res.json())
         .then((entries) => {
             if (entries !== {} && entries !== [] && entries !== undefined) {
-                const newEntries = Object.keys(entries).map((key) => {
-                    return {
-                        ...entries[key],
-                        uuid: key
-                    };
-                });
+                const newEntries = Object.keys(entries)
+                    .map((key) => {
+                        return {
+                            ...entries[key],
+                            uuid: key
+                        };
+                    })
+                    .sort((a, b) => {
+                        if (a.date > b.date) return 1;
+                        if (a.date < b.date) return -1;
+                        return 0;
+                    });
+                // const newEntriesSorted = newEntries.sort();
                 callback(newEntries);
             }
         })
@@ -102,6 +115,10 @@ export const dbDeleteEntry = async function (
     callback1,
     callback2
 ) {
+    // console.log(`Database.js -> dbDeleteEntry() -> function called`);
+    // console.log(`Database.js -> dbDeleteEntry() -> userID: ${userID}`);
+    // console.log(`Database.js -> dbDeleteEntry() -> token: ${token}`);
+    // console.log(`Database.js -> dbDeleteEntry() -> entryID: ${entryID}`);
     const userKey = `/${userID}`;
     const entryKey = `/${entryID}`;
     const auth = `.json?auth=${token}`;
@@ -115,9 +132,9 @@ export const dbDeleteEntry = async function (
         })
         .then((data) => {
             if (callback2) callback2(userID, token, callback1);
-            return data;
             // console.log(`Entry ${entryKey} deleted.`);
             // console.dir(data);
+            return data;
         })
         .catch((err) => {
             console.log(`Entry deletion failed`);

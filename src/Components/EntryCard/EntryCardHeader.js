@@ -38,16 +38,25 @@ const EntryCardHeader = function ({
 }) {
     const { location, date, tags } = entry;
     const formattedDate = new Date(date).toDateString();
-    let formattedAddress =
-        location === undefined ? "Parts Unknown" : location.formattedAddress;
+    // Nested ternary due to unidentified inconsistencies in the location objects passed in (I know, I hate it too)
+    const formattedAddress =
+        location === undefined
+            ? "Parts Unknown"
+            : location.formattedAddress === undefined
+            ? "Parts Unknown"
+            : location.formattedAddress;
     return (
         <StyledCardHeader
             title={
                 <Box>
-                    <StyledDate>{formattedDate}</StyledDate>
+                    <StyledDate>
+                        {cardMode === "CREATE"
+                            ? new Date(Date.now()).toDateString()
+                            : formattedDate}
+                    </StyledDate>
                     <StyledAddress>
                         {/* {location.formattedAddress || "Parts Unknown"} */}
-                        {formattedAddress}
+                        {cardMode === "CREATE" ? "" : formattedAddress}
                     </StyledAddress>
                     <PublicIcon></PublicIcon>
                 </Box>

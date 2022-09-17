@@ -11,14 +11,30 @@ const CardControls = function ({
     editModeToggle = () => {},
     cancelHandler = () => {}
 }) {
+    const deleteWrapper = function (e) {
+        e.stopPropagation();
+        deleteHandler();
+    };
+    const submitWrapper = function (e) {
+        e.stopPropagation();
+        submitHandler();
+    };
+    const editModeWrapper = function (e) {
+        e.stopPropagation();
+        editModeToggle();
+    };
+    const cancelWrapper = function (e) {
+        e.stopPropagation();
+        cancelHandler();
+    };
     return (
         <div>
             {cardMode !== "DISPLAY" && (
                 <div>
-                    <IconButton onClick={submitHandler}>
+                    <IconButton onClick={submitWrapper}>
                         <SaveIcon />
                     </IconButton>
-                    <IconButton onClick={cancelHandler}>
+                    <IconButton onClick={cancelWrapper}>
                         <CloseIcon />
                     </IconButton>
                     {/* <button onClick={submitHandler}>Save</button> */}
@@ -26,12 +42,12 @@ const CardControls = function ({
                 </div>
             )}
             {cardMode === "DISPLAY" && (
-                <IconButton onClick={editModeToggle}>
+                <IconButton onClick={editModeWrapper}>
                     <EditIcon />
                 </IconButton>
             )}
             {cardMode !== "CREATE" && (
-                <IconButton onClick={deleteHandler}>
+                <IconButton onClick={deleteWrapper}>
                     <DeleteForeverIcon />
                 </IconButton>
             )}

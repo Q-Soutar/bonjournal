@@ -59,7 +59,7 @@ const AuthProvider = function (props) {
 
     const loginHandler = function (email, password) {
         return new Promise((resolve, reject) => {
-            console.log(`loginHandler() ----> Retrieving token`);
+            // console.log(`loginHandler() ----> Retrieving token`);
             getNewToken(email, password)
                 .then((token) => {
                     startSession(token, setAuth);
@@ -87,10 +87,10 @@ const AuthProvider = function (props) {
     //     // sessionInitHandler();
     // }, []);
 
-    useEffect(() => {
-        console.log("Token updated: ");
-        console.log(token);
-    }, [token]);
+    // useEffect(() => {
+    //     console.log("Token updated: ");
+    //     console.log(token);
+    // }, [token]);
 
     const authValue = {
         token: token,
