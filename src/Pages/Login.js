@@ -3,6 +3,7 @@ import { Box } from "@mui/system";
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Link } from "@mui/material";
 
 const Login = function () {
     const navigate = useNavigate();
@@ -67,6 +68,10 @@ const Login = function () {
             />
             <br></br>
             <Button onClick={submitHandler}>Sign In</Button>
+            <br></br>
+            <Link href="/signup" tp="/signup" underline="hover">
+                Sign Up
+            </Link>
         </Box>
     );
 };

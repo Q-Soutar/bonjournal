@@ -78,8 +78,11 @@ const AuthProvider = function (props) {
         });
     };
 
-    const sessionInitHandler = function () {
+    const sessionInitHandler = function (newToken, redirect) {
         // sessionInit(setToken, setRefreshToken, setUserID);
+        console.log(`AuthProvider.js -> sessionInitHandler() -> newToken: `);
+        console.log(newToken);
+        startSession(newToken, setAuth);
     };
 
     // useEffect(() => {

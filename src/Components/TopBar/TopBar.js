@@ -15,10 +15,11 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import NewSearchBar from "./NewSearchBar";
 import stamp_red from "../../img/stamp_red.png";
 import { useContext, useState } from "react";
-import LogoutIcon from "@mui/icons-material/Logout";
 import { Logout } from "@mui/icons-material";
 import AuthContext from "../../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import PersonIcon from "@mui/icons-material/Person";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 
 // Since the predfined 'large' fails to work in this situation I've opted to just yoink the h4 or h3 fontsize (I'm undecided still). It's close enough and I can centrally manage it from the theme easily. Might create a dedicated key for this later but for now I can't be bothered.
 const MenuContainer = styled(Box)(({ theme }) => ({
@@ -61,24 +62,46 @@ const TopBar = function () {
         console.log("Logout registered");
         authCtx.signOut();
     };
+    const profileLink = function () {
+        navigate("/profile");
+    };
+    const journalLink = function () {
+        navigate("home");
+    };
     return (
         <AppBar>
             <Toolbar>
                 <img src={stamp_red} width="50px" />
-                <NewSearchBar />
-                <MenuContainer>
-                    <IconButton>
-                        <SettingsIcon />
-                    </IconButton>
-                    <IconButton onClick={handleMenuOpen}>
-                        <AccountCircleIcon />
-                    </IconButton>
-                    <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                        <MenuItem key="logout" onClick={logoutHandler}>
-                            <Button endIcon={<Logout />}>Logout</Button>
-                        </MenuItem>
-                    </Menu>
-                </MenuContainer>
+                {authCtx.token && <NewSearchBar />}
+                {authCtx.token && (
+                    <MenuContainer>
+                        <IconButton>
+                            <SettingsIcon />
+                        </IconButton>
+                        <IconButton onClick={handleMenuOpen}>
+                            <AccountCircleIcon />
+                        </IconButton>
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                        >
+                            <MenuItem key="journal" onClick={journalLink}>
+                                <Button endIcon={<FormatListBulletedIcon />}>
+                                    Journal
+                                </Button>
+                            </MenuItem>
+                            <MenuItem key="profile" onClick={profileLink}>
+                                <Button endIcon={<PersonIcon />}>
+                                    Profile
+                                </Button>
+                            </MenuItem>
+                            <MenuItem key="logout" onClick={logoutHandler}>
+                                <Button endIcon={<Logout />}>Logout</Button>
+                            </MenuItem>
+                        </Menu>
+                    </MenuContainer>
+                )}
             </Toolbar>
         </AppBar>
     );
