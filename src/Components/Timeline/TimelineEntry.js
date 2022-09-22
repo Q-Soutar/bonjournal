@@ -24,7 +24,7 @@ const StyledTimelineEntry = styled(TimelineItem)(({ theme }) => ({
     }
 }));
 
-const TimelineEntry = function ({ entry, deleteEntry, editEntry }) {
+const TimelineEntry = function ({ entry, deleteEntry, editEntry, tags }) {
     const [expanded, changeExpand] = useState(false);
     const toggleExpand = function () {
         changeExpand(!expanded);
@@ -47,6 +47,7 @@ const TimelineEntry = function ({ entry, deleteEntry, editEntry }) {
                     expanded={expanded}
                     toggleExpand={toggleExpand}
                     deleteEntry={deleteEntry}
+                    allTags={tags}
                 />
             </TimelineContent>
         </StyledTimelineEntry>

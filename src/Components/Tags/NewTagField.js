@@ -5,11 +5,15 @@ import { TextField } from "@mui/material";
 // Config import
 import { ENTER_KEY_CODE } from "../../Config";
 
-const JFTagField = function (props) {
+const JFTagField = function ({ formData, updateForm, formValidity }) {
     const [tagField, changeTagField] = useState("");
+    const { tags } = formData;
+    const { submitAttempt, tagsField } = formValidity;
 
     const handleTyping = function (e) {
-        changeTagField(e.target.value);
+        const char = e.target.value.toLowerCase();
+        console.log(char);
+        if (char !== " ") changeTagField(char);
     };
     const clearField = function () {
         changeTagField("");
@@ -23,9 +27,9 @@ const JFTagField = function (props) {
             return;
         }
         // * Inject the new tag into the form state's array, and clear the input
-        if (props.formData.tags.length < 3) {
-            const updatedTags = props.formData.tags.concat([e.target.value]);
-            props.updateForm({ name: "tags", value: updatedTags });
+        if (formData.tags.length < 3) {
+            const updatedTags = formData.tags.concat([e.target.value]);
+            updateForm({ name: "tags", value: updatedTags });
             clearField();
         } else {
             // * In the event more than three are entered
@@ -37,7 +41,7 @@ const JFTagField = function (props) {
 
     // Decide whether to do this here or inline
     const fieldError =
-        props.formValidity.submitAttempt && !props.formValidity.tagsField
+        formValidity.submitAttempt && !formValidity.tagsField
             ? "error"
             : undefined;
 
@@ -51,8 +55,7 @@ const JFTagField = function (props) {
             value={tagField}
             fullWidth
             error={
-                props.formValidity.submitAttempt &&
-                !props.formValidity.tagsField
+                formValidity.submitAttempt && !formValidity.tagsField
                     ? "error"
                     : undefined
             }

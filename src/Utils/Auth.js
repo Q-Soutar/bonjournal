@@ -1,8 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { storeToken, retrieveTokens, clearStoredTokens } from "./Cookies";
 
-const email = "stratton.soutar@gmail.com";
-const password = "test123";
 const signInBaseURL = "https://identitytoolkit.googleapis.com/v1/";
 const refreshBaseURL = "https://securetoken.googleapis.com/v1/";
 const signInPath = "accounts:signInWithPassword?key=";
@@ -11,58 +9,33 @@ const API_KEY = "AIzaSyCHDtn6M4QZ1XbL50d1HDFxK4ZrjvkQWUs";
 
 let refreshTimer;
 const restoreSession = function (token, setAuth) {
-    // console.log(`restoreSession() ----> token: `);
-    // console.log(token);
     setAuth(token);
     autoRefresh(token, setAuth);
 };
 const refreshSession = function ({ refreshToken }, setAuth) {
-    // console.log(`refreshSession() ----> refreshToken: `);
-    // console.log(refreshToken);
     employRefreshToken(refreshToken).then((token) => {
         startSession(token, setAuth);
     });
 };
+export const startSession = function (token, setAuth) {
+    setAuth(token);
+    storeToken(token);
+    autoRefresh(token, setAuth);
+};
 
 export const authInit = function (setAuth) {
-    // console.log(`>=====< authInit() >=====<`);
-    // console.log(`authInit() ----> beginning auth initialization`);
-    // console.log(`authInit() ----> Defining restoreSession()`);
-    // console.log(`authInit() ----> restoreSession() defined:`);
-    // console.dir(restoreSession);
-    // console.log(`authInit() ----> Defining refreshSession()`);
-    // console.log(`authInit() ----> restoreSession() defined:`);
-    // console.dir(restoreSession);
     // Check storage
-    // console.log(`authInit() ----> Checking local storage`);
     retrieveTokens()
         .then((storedToken) => {
             // If token present
-            // console.log(
-            //     `authInit() ----> retrieveTokens().then() ----> checking for existing token`
-            // );
             return new Promise((resolve, reject) => {
-                // console.log(
-                //     `authInit() ----> retrieveTokens().then() ----> checking for existing token`
-                // );
-                // console.log(storedToken);
                 // Browser can someimtes store undefined as a string, evidently.
                 if (
                     storedToken.refreshToken !== undefined &&
                     storedToken.refreshToken !== "undefined"
                 ) {
-                    // console.log(
-                    //     `authInit() ----> retrieveTokens().then() ----> Token found, resolving promise`
-                    // );
-                    // console.log(
-                    //     `authInit() ----> retrieveTokens().then() ----> storedToken: `
-                    // );
-                    // console.dir(storedToken);
                     resolve(storedToken);
                 } else {
-                    // console.log(
-                    //     `authInit() ----> retrieveTokens().then() ----> No token found, rejecting promise`
-                    // );
                     reject(null);
                 }
             });
@@ -70,33 +43,13 @@ export const authInit = function (setAuth) {
         .then(
             (token) => {
                 // Check token validity
-                // console.log(
-                //     `authInit() ----> retrieveTkens().then().then() ----> isNaN(${isNaN(
-                //         token.expiry
-                //     )})`
-                // );
                 const tokenValidity = checkTokenValidity(token);
-                // console.log(
-                //     `authInit() ----> retrieveTokens().then().then() ----> tokenValidity: ${tokenValidity}`
-                // );
-                // If valid
-                // Set LoggedIn state to true (?)
-                // Write authCtx variables
-                // Redirect to home page
-                // console.log(
-                //     `authInit() ----> retrieveTokens().then().then() ----> token: `
-                // );
-                // console.log(token);
+                // If valid, restore session
                 if (tokenValidity) restoreSession(token, setAuth);
-                // If invalid
-                // Use refresh token
-                // Store new token data
+                // If invalid, refresh session
                 if (!tokenValidity) refreshSession(token, setAuth);
             },
             () => {
-                // console.log(
-                //     "authInit() ----> retrieveTokens().then().then() ----> Promise rejected, no token found, defaulting auth state..."
-                // );
                 setAuth();
                 clearStoredTokens();
             }
@@ -113,51 +66,15 @@ export const authInit = function (setAuth) {
     // If token absent
     // Redirect to login
     const checkTokenValidity = function ({ expiry }) {
-        // console.log(`checkTokenValidity() ----> expiry: ${expiry}`);
-        const curTime = new Date().getTime();
-        // console.log(`checkTokenValidity() ----> curTime: ${curTime}`);
-        // const expTime1 = Date.now() + ttl;
-        // console.log(`checkTokenValidity() ----> expTime1: ${expTime1}`);
-        // const expTime2 =
-        //     typeof new Date(ttl).getTime() + Date.now() === "number"
-        //         ? new Date(ttl).getTime() + Date.now()
-        //         : 0;
-        // console.log(`checkTokenValidity() ----> expTime: ${expTime}`);
-        // const ttl = expTime - curTime;
-        // console.log(`checkTokenValidity() ----> ttl: ${expiry}`);
-        // 2 If valid, set token state to this and set the refresh timer
-        // console.log(`checkTokenValidity() ----> expiry > 10: ${expiry > 10}`);
-        // console.log(`checkTokenValidity() ----> expiry <= 10: ${expiry <= 10}`);
-        // console.log(
-        //     `checkTokenValidity() ----> isNaN(expiry): ${isNaN(expiry)}`
-        // );
-        // console.log(`Something something why not log`);
         if (expiry > 10000) {
-            // console.log(
-            //     `checkTokenValidity() ----> ttl is greater than 10s, returning true`
-            // );
             return true;
         } else if (expiry <= 10000 || isNaN(expiry)) {
-            // console.log(
-            //     `checkTokenValidity() ----> ttl is less than or equal to 10s, returning false`
-            // );
             return false;
-            // 3 If invalid, set to null (????)
-            // 4 Check if refresh token is present
-            // 5 If present, use to get a new token
         } else {
-            // 6 Failing all of the above, land the user on the login screen
             console.log("Time check failure, throwing error");
             throw new Error("Token expired");
         }
     };
-};
-
-export const startSession = function (token, setAuth) {
-    // console.log(token);
-    setAuth(token);
-    storeToken(token);
-    // autoRefresh(, setAuth);
 };
 
 export const getNewToken = function (email, password) {
@@ -179,24 +96,20 @@ export const getNewToken = function (email, password) {
     })
         .then((res) => {
             if (res.ok) {
-                // console.log(`getNewToken() ----> API call response: `);
-                // console.log(res);
                 return res.json();
             }
             if (!res.ok) throw new Error(res);
         })
-        .then((data) => {
-            // console.log(`getNewToken ----> data: `);
-            // console.log(data);
+        .then(({ idToken, refreshToken, expiresIn, localID }) => {
             return new Promise(function (resolve, reject) {
                 // If valid
                 // Return promise true
                 // if (res.ok)
                 resolve({
-                    token: data.idToken,
-                    refreshToken: data.refreshToken,
-                    expiry: data.expiresIn,
-                    userID: data.localId
+                    token: idToken,
+                    refreshToken: refreshToken,
+                    expiry: expiresIn,
+                    userID: localID
                 });
                 // If invalid
                 // Return promise login error
@@ -229,27 +142,22 @@ export const employRefreshToken = function (refreshToken) {
     return fetch(refreshURL, {
         method: "POST",
         body: refreshFormBody,
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
+        headers: refreshHeaders
     })
         .then((res) => {
             return res.json();
-            // Attempted merging this with the .then() below, but that went haywire due to the async part of the res.json() function. I couldn've done a nested .then() but that seemed exorbitantly messy.
         })
-        .then((data) => {
-            // console.log(`employRefreshToken() -> .then().then() -> data: `);
-            // console.log(data);
+        .then(({ id_token, refresh_token, expires_in, user_id }) => {
             return new Promise(function (resolve, reject) {
                 // autoRefresh(data.refresh_token, data.expiresIn);
                 // If valid
                 // Return promise true
                 // The docs for this actually get the payload completely wrong, sporting not only inaccurate casing, but *inaccurate field names*
                 resolve({
-                    token: data.id_token,
-                    refreshToken: data.refresh_token,
-                    expiry: data.expires_in, // Uncertain longterm about using this but keeping it in the code for now if I do end up strongly needing it
-                    userID: data.user_id
+                    token: id_token,
+                    refreshToken: refresh_token,
+                    expiry: expires_in, // Uncertain longterm about using this but keeping it in the code for now if I do end up strongly needing it
+                    userID: user_id
                 });
                 // If invalid
                 // Return promise login error
@@ -260,16 +168,15 @@ export const employRefreshToken = function (refreshToken) {
             console.log(err);
         });
 };
-export const autoRefresh = function ({ refreshToken, expiry }, setAuth) {
-    // console.log(`autoRefresh(refreshToken) -- ${refreshToken}`);
-    // console.log(`autoRefresh(_,ttl) -- ${expiry}`);
-    const timeLeft = expiry / 1000;
-    // console.log(`autoRefresh() -- timeLeft: ${timeLeft}s`);
-    // if (expiry < 1000000) expiry = 1000000;
-    refreshTimer = setTimeout(function (refreshToken) {
-        // console.log("Timeout complete, refreshing session...");
-        refreshSession(refreshToken, setAuth);
-    }, expiry);
+export const autoRefresh = function (token, setAuth) {
+    const expiry = token;
+    refreshTimer = setTimeout(
+        function (token) {
+            refreshSession(token, setAuth);
+        },
+        expiry,
+        token
+    );
 };
 
 export const login = function (email, password) {

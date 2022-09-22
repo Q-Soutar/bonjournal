@@ -4,8 +4,16 @@ import TimelineEnd from "./TimelineEnd";
 import TimelineEntry from "./TimelineEntry";
 import { Box } from "@mui/system";
 
-const Timeline = function (props) {
-    if (props.entries !== []) {
+const Timeline = function ({
+    entries,
+    deleteEntry,
+    editEntry,
+    createEntryHandler,
+    createEntryMode,
+    createEntryToggle,
+    tags
+}) {
+    if (entries !== []) {
         return (
             <Box
                 sx={{
@@ -14,21 +22,23 @@ const Timeline = function (props) {
                     paddingTop: "50px"
                 }}
             >
-                {props.entries.map((entry) => {
+                {entries.map((entry) => {
                     return (
                         <TimelineEntry
                             entry={entry}
-                            deleteEntry={props.deleteEntry}
-                            editEntry={props.editEntry}
+                            deleteEntry={deleteEntry}
+                            editEntry={editEntry}
                             key={entry.uuid}
                             startCardMode={"DISPLAY"}
+                            tags={tags}
                         />
                     );
                 })}
                 <TimelineEnd
-                    createEntryHandler={props.createEntryHandler}
-                    createEntryMode={props.createEntryMode}
-                    createEntryToggle={props.createEntryToggle}
+                    createEntryHandler={createEntryHandler}
+                    createEntryMode={createEntryMode}
+                    createEntryToggle={createEntryToggle}
+                    tags={tags}
                 />
             </Box>
         );

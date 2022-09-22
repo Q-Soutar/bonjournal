@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Account from "../Components/Account/Account";
 import AuthContext from "../Context/AuthContext";
-import { authCreateUserFull } from "../Utils/Database";
+import { authCreateUserFull } from "../Utils/DatabaseUser";
 
 const SignUp = function () {
     const navigate = useNavigate();

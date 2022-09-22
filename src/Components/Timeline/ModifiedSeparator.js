@@ -28,12 +28,18 @@ const StyledTimelineSeparator = styled(TimelineSeparator)(({ theme }) => ({
 }));
 
 // * Helper component that is basically a container for various timeline elements.
-const ModifiedSeparator = function (props) {
+const ModifiedSeparator = function ({
+    uuid,
+    toggleExpand,
+    expanded,
+    deleteEntry,
+    editModeToggle
+}) {
     // const entriesCtx = useContext(EntriesContext);
     const deleteHandler = function () {
-        props.toggleExpand();
-        // entriesCtx.deleteEntry(props.uuid);
-        props.deleteEntry(props.uuid);
+        toggleExpand();
+        // entriesCtx.deleteEntry(uuid);
+        deleteEntry(uuid);
     };
     return (
         <StyledTimelineSeparator>
@@ -49,7 +55,7 @@ const ModifiedSeparator = function (props) {
                     justifySelf: "center"
                 }}
             >
-                {props.expanded ? (
+                {expanded ? (
                     <Box
                         sx={{
                             display: "flex",
@@ -69,7 +75,7 @@ const ModifiedSeparator = function (props) {
                             <DeleteForeverIcon />
                         </IconButton>
                         <IconButton>
-                            <EditIcon onClick={props.editModeToggle} />
+                            <EditIcon onClick={editModeToggle} />
                         </IconButton>
                     </Box>
                 ) : (

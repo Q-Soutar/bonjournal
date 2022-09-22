@@ -34,7 +34,8 @@ const EntryCardHeader = function ({
     entry,
     expanded,
     cardMode,
-    handleEntryEdits
+    handleEntryEdits,
+    allTags
 }) {
     const { location, date, tags } = entry;
     const formattedDate = new Date(date).toDateString();
@@ -66,6 +67,7 @@ const EntryCardHeader = function ({
             subheader={
                 <TagDisplay
                     tags={!tags ? [] : tags}
+                    allTags={allTags}
                     cardMode={cardMode}
                     handleEntryEdits={handleEntryEdits}
                 />

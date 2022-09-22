@@ -1,11 +1,8 @@
-import logo from "./logo.svg";
 import "./App.css";
-import { useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Pages/Login";
 import Home from "./Pages/Home";
 import About from "./Pages/About";
-import AuthContext from "./Context/AuthContext";
 import AuthProvider from "./Context/AuthProvider";
 import { themeOptions } from "./Utils/MaterialTheme";
 import { createTheme, ThemeProvider } from "@mui/material/styles";

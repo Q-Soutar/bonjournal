@@ -18,7 +18,7 @@ import {
     dbEditUserDataFull,
     dbGetUserData,
     dbEditUserDataPartial
-} from "../Utils/Database";
+} from "../Utils/DatabaseUser";
 import { startSession } from "../Utils/Auth";
 
 // For reasons beyond me the flexbox would not align it, so I hijacked
@@ -43,7 +43,7 @@ const testData = {
     email: "stratton.soutar@gmail.com"
 };
 
-const Profile = function (props) {
+const Profile = function () {
     const authCtx = useContext(AuthContext);
     const [signUpMode, setSignUpMode] = useState(false);
     const [editMode, setEditMode] = useState(false);

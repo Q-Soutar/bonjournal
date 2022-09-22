@@ -36,7 +36,8 @@ const EntryCard = function ({
     startCardMode = "DISPLAY",
     expanded,
     toggleExpand,
-    createEntryHandler
+    createEntryHandler,
+    allTags
 }) {
     // ? Maybe relocate this to the timeline entry?
     // ? It's going to take a lot of finagling to untangle all the state stuff with this
@@ -91,6 +92,7 @@ const EntryCard = function ({
                 expanded={expanded}
                 cardMode={localCardMode}
                 handleEntryEdits={handleFieldEdits}
+                allTags={allTags}
             />
             <EntryCardCollapse
                 text={entryState.text}

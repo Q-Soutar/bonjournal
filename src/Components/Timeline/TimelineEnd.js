@@ -53,7 +53,8 @@ const StyledTimelineItem = styled(TimelineItem)(({ theme }) => ({
 const TimelineEnd = function ({
     createEntryHandler,
     createEntryMode,
-    createEntryToggle
+    createEntryToggle,
+    tags
 }) {
     // const [expanded, changeExpand] = useState(false);
     // const toggleExpand = function () {
@@ -81,6 +82,7 @@ const TimelineEnd = function ({
                         startCardMode={"CREATE"}
                         cancelToggle={createEntryToggle}
                         expanded={true}
+                        allTags={tags}
                     />
                 </TimelineContent>
             )}

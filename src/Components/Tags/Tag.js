@@ -24,9 +24,9 @@ const Tag = function ({ tag, cardMode, deleteTagHandler }) {
             {cardMode !== "DISPLAY" && (
                 <button onClick={deleteTagWrapper}>x</button>
             )} */}
-            <Tooltip title={tag} TransitionComponent={Zoom}>
+            <Tooltip title={tag.text} TransitionComponent={Zoom}>
                 <StyledChip
-                    label={tag}
+                    label={tag.text}
                     onDelete={
                         cardMode !== "DISPLAY" ? deleteTagWrapper : undefined
                     }

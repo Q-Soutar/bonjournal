@@ -1,31 +1,25 @@
 // import logo from "./logo.svg";
 import { useContext, useEffect, useState } from "react";
-import { getNewToken } from "../Utils/Auth";
-import { storeToken } from "../Utils/Cookies";
 import {
     dbInitEntries,
     dbCreateEntry,
     dbDeleteEntry,
-    dbUpdateEntry
+    dbUpdateEntry,
+    dbCreateTag,
+    dbTagWrite
 } from "../Utils/Database";
-import { v4 as uuid } from "uuid";
+// import { v4 as uuid } from "uuid";
+import { nanoid as uuid } from "nanoid";
 import Timeline from ".././Components/Timeline/Timeline";
-import EntryCard from "../Components/EntryCard/EntryCard";
-import { Button } from "@mui/material";
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    useNavigate
-} from "react-router-dom";
+import { Box, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import AuthContext from "../Context/AuthContext";
+// import { dbInitTags } from "../Utils/DatabaseTags";
+import { dbInitTags } from "../Utils/DatabaseTags.js";
 
 const GMAP_API_KEY = "";
 const GC_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json?";
 const GC_RESULT_TYPE = "country|sublocality|administrative_area_level_1";
-
-const email = "stratton.soutar@gmail.com";
-const password = "test456";
 
 /*
     Concept for managing the props and callbacks:
@@ -35,6 +29,7 @@ const password = "test456";
 function Home() {
     const navigate = useNavigate();
     const [entries, setEntries] = useState([]);
+    const [tags, setTags] = useState([]);
     const [createEntryMode, setCreateEntryMode] = useState(false);
     const authCtx = useContext(AuthContext);
 
@@ -46,7 +41,7 @@ function Home() {
         document.getElementById("end").scrollIntoView();
     };
 
-    const isLoggedIn = !!authCtx.token;
+    // const isLoggedIn = !!authCtx.token;
 
     const createEntryHandler = function (newEntry) {
         // e.preventDefault();
@@ -55,19 +50,19 @@ function Home() {
         newEntry.date = Date.now();
         setLocation()
             .then((pos) => {
-                console.log(
-                    `<Home/> -> createEntryHandler() -> setLocation().then() -> Location received`
-                );
+                // console.log(
+                //     `<Home/> -> createEntryHandler() -> setLocation().then() -> Location received`
+                // );
                 newEntry.location = {
                     lat: pos.coords.latitude,
                     long: pos.coords.longitude
                 };
-                console.log(
-                    `<Home/> -> createEntryHandler() -> setLocation().then() -> Location set`
-                );
-                console.log(
-                    `<Home/> -> createEntryHandler() -> setLocation().then() -> Sending new entry to DB`
-                );
+                // console.log(
+                //     `<Home/> -> createEntryHandler() -> setLocation().then() -> Location set`
+                // );
+                // console.log(
+                //     `<Home/> -> createEntryHandler() -> setLocation().then() -> Sending new entry to DB`
+                // );
                 dbCreateEntry(
                     newEntry,
                     authCtx.userID,
@@ -75,9 +70,32 @@ function Home() {
                     setEntries,
                     dbInitEntries
                 );
-                console.log(
-                    `<Home/> -> createEntryHandler() -> setLocation().then() -> DB call initiated, reverting createEntryMode state`
-                );
+                console.log(`<Home/> -> createEntryHandler() -> newEntry:`);
+                console.dir(newEntry);
+                dbTagWrite(
+                    newEntry.tags,
+                    tags,
+                    newEntry.uuid,
+                    authCtx.userID,
+                    authCtx.token
+                ).then(() => {
+                    dbInitTags(authCtx.token, authCtx.userID)
+                        .then((tags) => {
+                            setTags(tags);
+                        })
+                        .catch((err) => console.error(err));
+                });
+                // newEntry.tags.forEach((tag) => {
+                //     dbCreateTag(
+                //         tag,
+                //         newEntry.uuid,
+                //         authCtx.userID,
+                //         authCtx.token
+                //     );
+                // });
+                // console.log(
+                //     `<Home/> -> createEntryHandler() -> setLocation().then() -> DB call initiated, reverting createEntryMode state`
+                // );
                 createEntryToggle();
             })
             .catch((err) => console.log(err));
@@ -180,7 +198,17 @@ function Home() {
     };
 
     const initApp = function () {
+        // Need to normalize DB call params pattern
         dbInitEntries(authCtx.userID, authCtx.token, timelineInit);
+        dbInitTags(authCtx.token, authCtx.userID)
+            .then((tags) => {
+                console.log(
+                    `<Home> -> initApp() -> dbInitTags().then() -> tags: `
+                );
+                console.dir(tags);
+                setTags(tags);
+            })
+            .catch((err) => console.error(err));
     };
 
     useEffect(() => {
@@ -193,6 +221,7 @@ function Home() {
         <div>
             <Timeline
                 entries={entries}
+                tags={tags}
                 deleteEntry={deleteEntryHandler}
                 editEntry={editEntryHandler}
                 createEntryMode={createEntryMode}
@@ -200,17 +229,16 @@ function Home() {
                 createEntryToggle={createEntryToggle}
                 setCreateMode={setCreateEntryMode}
             />
-            {/* {!createEntryMode && (
-                <Button onClick={createEntryToggle}>Create Entry</Button>
-            )}
-            {createEntryMode && (
-                <EntryCard
-                    submitFunction={createEntryHandler}
-                    startCardMode={"CREATE"}
-                    cancelToggle={createEntryToggle}
-                    expanded={true}
-                />
-            )} */}
+            <Box>
+                {tags.map((tag) => {
+                    return (
+                        <p key={tag.uuid}>
+                            {JSON.stringify(tag)}
+                            <br></br>
+                        </p>
+                    );
+                })}
+            </Box>
         </div>
     );
 }
