@@ -1,4 +1,5 @@
-import { Chip, Tooltip, styled, Zoom } from "@mui/material";
+// Material UI
+import { Chip, Tooltip, styled, Zoom, Box } from "@mui/material";
 
 const StyledChip = styled(Chip)({
     margin: "3px",
@@ -10,20 +11,8 @@ const Tag = function ({ tag, cardMode, deleteTagHandler }) {
     const deleteTagWrapper = function () {
         deleteTagHandler(tag);
     };
-    // const deleteTag = function () {
-    //     checkTagsValidity();
-    //     const newTags = tags.filter((_el, index) => {
-    //         return tags[index] !== tag;
-    //     });
-    //     updateForm({ name: "tags", value: newTags });
-    // };
-
     return (
-        <div>
-            {/* <p>{tag}</p>
-            {cardMode !== "DISPLAY" && (
-                <button onClick={deleteTagWrapper}>x</button>
-            )} */}
+        <Box>
             <Tooltip title={tag.text} TransitionComponent={Zoom}>
                 <StyledChip
                     label={tag.text}
@@ -32,7 +21,7 @@ const Tag = function ({ tag, cardMode, deleteTagHandler }) {
                     }
                 />
             </Tooltip>
-        </div>
+        </Box>
     );
 };
 

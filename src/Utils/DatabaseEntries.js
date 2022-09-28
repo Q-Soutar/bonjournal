@@ -1,10 +1,6 @@
 const DB_URL_BASE = "https://bonjournal-360318-default-rtdb.firebaseio.com";
-const AUTH_URL_BASE = "https://identitytoolkit.googleapis.com/v1/accounts";
 // TL = "top-level"
-const DB_USERS_TLKEY = "/users";
 const DB_ENTRIES_TLKEY = "/entries";
-const DB_TAGS_TLKEY = "/tags";
-const API_KEY = "AIzaSyCHDtn6M4QZ1XbL50d1HDFxK4ZrjvkQWUs";
 
 export const dbInitEntries = function (userID, token, callback) {
     const userKey = `/${userID}`;
@@ -13,13 +9,16 @@ export const dbInitEntries = function (userID, token, callback) {
     const startTime = Date.now() - 30 * 24 * 60 * 60;
     // const startAt = `&startAt=${startTime}`;
     const limitToFirst = `&limitToFirst=25`;
-    // const dbCallURL = `${DB_URL_BASE}${DB_ENTRIES_TLKEY}${userKey}${auth}${orderBy}${startAt}`;
     const dbCallURL = `${DB_URL_BASE}${DB_ENTRIES_TLKEY}${userKey}${auth}${orderBy}${limitToFirst}`;
-    // const dbCallURL = `${DB_URL_BASE}${DB_ENTRIES_TLKEY}${userKey}${auth}${orderBy}`;
     fetch(dbCallURL)
         .then((res) => res.json())
         .then((entries) => {
-            if (entries !== {} && entries !== [] && entries !== undefined) {
+            if (
+                entries !== {} &&
+                entries !== [] &&
+                entries !== undefined &&
+                entries !== null
+            ) {
                 const newEntries = Object.keys(entries)
                     .map((key) => {
                         return {
@@ -32,7 +31,6 @@ export const dbInitEntries = function (userID, token, callback) {
                         if (a.date < b.date) return -1;
                         return 0;
                     });
-                // const newEntriesSorted = newEntries.sort();
                 callback(newEntries);
             }
         })
@@ -73,6 +71,7 @@ export const dbCreateEntry = function (
             console.log(err);
         });
 };
+
 // Merge this with the create function since they are basically the exact same thing.
 export const dbUpdateEntry = function (
     entry,
@@ -110,9 +109,9 @@ export const dbUpdateEntry = function (
 };
 
 export const dbDeleteEntry = async function (
+    entryID,
     userID,
     token,
-    entryID,
     callback1,
     callback2
 ) {

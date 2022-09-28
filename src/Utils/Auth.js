@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+// App files
 import { storeToken, retrieveTokens, clearStoredTokens } from "./Cookies";
 
 const signInBaseURL = "https://identitytoolkit.googleapis.com/v1/";
@@ -60,18 +60,13 @@ export const authInit = function (setAuth) {
                 err
             );
         });
-    // Set loggedIn state to true
-    // Write authCtx variables
-    // Redirect to home page
-    // If token absent
-    // Redirect to login
     const checkTokenValidity = function ({ expiry }) {
         if (expiry > 10000) {
             return true;
         } else if (expiry <= 10000 || isNaN(expiry)) {
             return false;
         } else {
-            console.log("Time check failure, throwing error");
+            console.error("Time check failure, throwing error");
             throw new Error("Token expired");
         }
     };
@@ -100,24 +95,19 @@ export const getNewToken = function (email, password) {
             }
             if (!res.ok) throw new Error(res);
         })
-        .then(({ idToken, refreshToken, expiresIn, localID }) => {
+        .then(({ idToken, refreshToken, expiresIn, localId }) => {
+            console.log();
             return new Promise(function (resolve, reject) {
-                // If valid
-                // Return promise true
-                // if (res.ok)
                 resolve({
                     token: idToken,
                     refreshToken: refreshToken,
-                    expiry: expiresIn,
-                    userID: localID
+                    expiry: expiresIn * 1000,
+                    userID: localId
                 });
-                // If invalid
-                // Return promise login error
-                // if (!res.ok) reject(new Error(data));
             });
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
         });
 };
 export const employRefreshToken = function (refreshToken) {
@@ -149,27 +139,25 @@ export const employRefreshToken = function (refreshToken) {
         })
         .then(({ id_token, refresh_token, expires_in, user_id }) => {
             return new Promise(function (resolve, reject) {
-                // autoRefresh(data.refresh_token, data.expiresIn);
-                // If valid
-                // Return promise true
                 // The docs for this actually get the payload completely wrong, sporting not only inaccurate casing, but *inaccurate field names*
                 resolve({
                     token: id_token,
                     refreshToken: refresh_token,
-                    expiry: expires_in, // Uncertain longterm about using this but keeping it in the code for now if I do end up strongly needing it
+                    expiry: expires_in * 1000,
                     userID: user_id
                 });
-                // If invalid
-                // Return promise login error
-                // if (!res.ok) reject(new Error(data));
             });
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
         });
 };
 export const autoRefresh = function (token, setAuth) {
-    const expiry = token;
+    const expiry = token.expiry;
+    if (expiry < 1000) {
+        console.error("Invalid expiry time, cancelling auto-refresh");
+        return;
+    }
     refreshTimer = setTimeout(
         function (token) {
             refreshSession(token, setAuth);
@@ -184,10 +172,6 @@ export const login = function (email, password) {
     getNewToken(email, password)
         .then((token) => {
             if (!token) throw new Error("Not token received!");
-            // If valid
-            // Store token
-            // Write authCtx somehow
-            // Look into non-chained .then() statements
             return storeToken(token);
         })
         .then(() => {
@@ -196,11 +180,7 @@ export const login = function (email, password) {
             });
         })
         .catch((err) => {
-            // If invalid
-            // Redirect to login
-            console.log(`Something went wrong! -- ${err}`);
-            // Set login error message
-            // Redirect logic here
+            console.error(`Something went wrong! -- ${err}`);
         });
 };
 export const logout = function () {
@@ -208,7 +188,6 @@ export const logout = function () {
     clearStoredTokens();
     // Clear autoRefresh
     if (refreshTimer) clearTimeout(refreshTimer);
-    // Redirect to login page
     return new Promise((resolve, reject) => {
         resolve(true);
     });

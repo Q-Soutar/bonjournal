@@ -1,6 +1,7 @@
 // Material IU imports
-import { CardContent, Typography, Collapse, styled } from "@mui/material";
-import CardText from "./CardFields/CardText";
+import { CardContent, Collapse, styled } from "@mui/material";
+// App files
+import { CardText } from "./IndexEntryCard";
 
 const StyledCardContent = styled(CardContent)({
     paddingBottom: "-10px",

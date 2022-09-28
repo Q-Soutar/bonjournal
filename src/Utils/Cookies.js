@@ -7,7 +7,7 @@ export const storeToken = function (tokenData) {
     const tokenCookie = `token=${token}; max-age=${TOKEN_TTL}; secure`;
     const refreshCookie = `refresh_token=${refreshToken}; max-age=${MAX_SESSION_LENGTH}; secure`;
     const expiryCookie = `expiry=${new Date(
-        expiry * 1000 + Date.now()
+        expiry + Date.now()
     )}; max-age=${TOKEN_TTL}; secure`;
     const userIDCookie = `user_id=${userID}; max-age=${TOKEN_TTL}; secure`;
     // write strings to cookie storage
@@ -17,7 +17,6 @@ export const storeToken = function (tokenData) {
     document.cookie = userIDCookie;
     return new Promise(function (resolve, reject) {
         resolve(tokenData);
-        // reject("Error");
     });
 };
 

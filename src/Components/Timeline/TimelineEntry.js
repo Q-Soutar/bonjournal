@@ -1,12 +1,15 @@
-import EntryCard from "../EntryCard/EntryCard";
-import { styled } from "@mui/system";
+// React
 import { useState } from "react";
+// Material UI
+import { styled } from "@mui/system";
 import {
     TimelineItem,
     TimelineContent,
     TimelineOppositeContent
 } from "@mui/lab";
-import ModifiedSeparator from "./ModifiedSeparator";
+// App files
+import { ModifiedSeparator } from "./IndexTimeline";
+import { EntryCard } from "../EntryCard/IndexEntryCard";
 
 const StyledTimelineEntry = styled(TimelineItem)(({ theme }) => ({
     maxWidth: "100vw",
@@ -24,7 +27,7 @@ const StyledTimelineEntry = styled(TimelineItem)(({ theme }) => ({
     }
 }));
 
-const TimelineEntry = function ({ entry, deleteEntry, editEntry, tags }) {
+const TimelineEntry = function ({ entry, tags, deleteEntry, editEntry }) {
     const [expanded, changeExpand] = useState(false);
     const toggleExpand = function () {
         changeExpand(!expanded);

@@ -1,6 +1,4 @@
-// React imports
-import { useEffect, useContext, useState } from "react";
-// Material UI imports
+// Material UI
 import HelpIcon from "@mui/icons-material/Help";
 import {
     TimelineItem,
@@ -11,7 +9,8 @@ import {
     TimelineContent
 } from "@mui/lab";
 import { styled } from "@mui/system";
-import EntryCard from "../EntryCard/EntryCard";
+// App files
+import { EntryCard } from "../EntryCard/IndexEntryCard";
 
 const StyledTimelineItem = styled(TimelineItem)(({ theme }) => ({
     maxWidth: "100%",
@@ -41,6 +40,7 @@ const StyledTimelineItem = styled(TimelineItem)(({ theme }) => ({
     }
 }));
 
+// Not sure why I retained this, but because I have a keen interest in not losing any CSS work I've done, I am going to keep it for reference purposes in case this code may come in handy in the future / if I need to do something similar again.
 // const StyledTimelineEntry = styled(TimelineItem)(({ theme }) => ({
 //     maxWidth: "100vw",
 //     flex: "0 0 auto",
@@ -56,15 +56,6 @@ const TimelineEnd = function ({
     createEntryToggle,
     tags
 }) {
-    // const [expanded, changeExpand] = useState(false);
-    // const toggleExpand = function () {
-    //     changeExpand(!expanded);
-    // };
-    // const [createEntryMode, setCreateEntryMode] = useState(false);
-    // const createEntryToggle = function () {
-    //     setCreateEntryMode(!createEntryMode);
-    // };
-
     return (
         <StyledTimelineItem>
             <TimelineOppositeContent />

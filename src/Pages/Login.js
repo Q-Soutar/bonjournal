@@ -1,9 +1,10 @@
-import { TextField, Typography, Button } from "@mui/material";
-import { Box } from "@mui/system";
+// React
 import { useContext, useEffect, useState } from "react";
-import AuthContext from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Link } from "@mui/material";
+// Material UI
+import { TextField, Typography, Button, Link, Box } from "@mui/material";
+// App files
+import AuthContext from "../Context/AuthContext";
 
 const Login = function () {
     const navigate = useNavigate();
@@ -12,8 +13,6 @@ const Login = function () {
     const [password, setPassword] = useState("");
 
     useEffect(() => {
-        // console.log("Login page mount");
-        // console.log(`<Login/> -> authCtx.token: ${authCtx.token}`);
         if (authCtx.token) navigate("/home");
     }, [authCtx.token]);
     const emailHandler = function (e) {

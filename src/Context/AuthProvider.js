@@ -1,38 +1,9 @@
-// import { ErrorSharp } from "@mui/icons-material";
-import { setRef } from "@mui/material";
+// React
 import { useEffect, useState } from "react";
-import AuthContext from "./AuthContext";
-import {
-    storeToken,
-    getStoredTokens,
-    clearStoredTokens
-} from "../Utils/Cookies";
-import {
-    getNewToken,
-    sessionInit,
-    refreshSession,
-    autoRefresh,
-    authInit,
-    startSession,
-    logout
-} from "../Utils/Auth";
 import { useNavigate } from "react-router-dom";
-
-const signInBaseURL = "https://identitytoolkit.googleapis.com/v1/";
-const refreshBaseURL = "https://securetoken.googleapis.com/v1/";
-const signInPath = "accounts:signInWithPassword?key=";
-const refreshPath = "token?key=";
-let refreshTimer;
-
-const API_KEY = "AIzaSyCHDtn6M4QZ1XbL50d1HDFxK4ZrjvkQWUs";
-const TOKEN_TTL = 3600; // 1 hour, 60*60, per Firebase docs
-const MAX_SESSION_LENGTH = 2592000; // 30 days, 60*60*24*30, chosen semi-arbitrarily.
-
-// ? Could be worth adding in a new "response parser" function to handle some of the repeat code. Frankly, need to make sure the promise chain even works at all before making those kinds of changes though.
-// ? Might be worth looking into one-to-many promise handlers
-// ? Would need to chart that out since bluntly I'm having a bit of trouble following this all just in my head at this point
-
-// * Just gonna wing it from here and see how things go.
+// App files
+import AuthContext from "./AuthContext";
+import { getNewToken, authInit, startSession, logout } from "../Utils/Auth";
 
 const AuthProvider = function (props) {
     const [token, setToken] = useState(null);
@@ -59,7 +30,6 @@ const AuthProvider = function (props) {
 
     const loginHandler = function (email, password) {
         return new Promise((resolve, reject) => {
-            // console.log(`loginHandler() ----> Retrieving token`);
             getNewToken(email, password)
                 .then((token) => {
                     startSession(token, setAuth);
@@ -68,6 +38,7 @@ const AuthProvider = function (props) {
                 })
                 .catch((err) => {
                     reject(false);
+                    console.error(err);
                 });
         });
     };
@@ -78,27 +49,13 @@ const AuthProvider = function (props) {
         });
     };
 
-    const sessionInitHandler = function (newToken, redirect) {
-        // sessionInit(setToken, setRefreshToken, setUserID);
-        console.log(`AuthProvider.js -> sessionInitHandler() -> newToken: `);
-        console.log(newToken);
+    const sessionInitHandler = function (newToken) {
         startSession(newToken, setAuth);
     };
-
-    // useEffect(() => {
-    //     sessionInit(setToken, setRefreshToken, setUserID);
-    //     // sessionInitHandler();
-    // }, []);
-
-    // useEffect(() => {
-    //     console.log("Token updated: ");
-    //     console.log(token);
-    // }, [token]);
 
     const authValue = {
         token: token,
         tokenExpireDate: "",
-        // sessionTimeoutDate: "", Implement later
         refreshToken: refreshToken,
         userID: userID,
         signIn: loginHandler,

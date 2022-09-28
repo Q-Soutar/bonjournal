@@ -1,8 +1,12 @@
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import EditIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
-import CloseIcon from "@mui/icons-material/Close";
-import { IconButton } from "@mui/material";
+// Material UI
+import { Box } from "@mui/system";
+import {
+    DeleteForeverIcon,
+    EditIcon,
+    SaveIcon,
+    CloseIcon,
+    IconButton
+} from "../../Utils/IndexIcons";
 
 const CardControls = function ({
     cardMode = "DISPLAY",
@@ -28,18 +32,16 @@ const CardControls = function ({
         cancelHandler();
     };
     return (
-        <div>
+        <Box>
             {cardMode !== "DISPLAY" && (
-                <div>
+                <Box>
                     <IconButton onClick={submitWrapper}>
                         <SaveIcon />
                     </IconButton>
                     <IconButton onClick={cancelWrapper}>
                         <CloseIcon />
                     </IconButton>
-                    {/* <button onClick={submitHandler}>Save</button> */}
-                    {/* <button onClick={cancelHandler}>Cancel</button> */}
-                </div>
+                </Box>
             )}
             {cardMode === "DISPLAY" && (
                 <IconButton onClick={editModeWrapper}>
@@ -51,7 +53,7 @@ const CardControls = function ({
                     <DeleteForeverIcon />
                 </IconButton>
             )}
-        </div>
+        </Box>
     );
 };
 

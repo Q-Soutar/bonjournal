@@ -1,14 +1,18 @@
-import TagDisplay from "../Tags/TagDisplay";
-import CardControls from "./CardControls";
-import CardDate from "./CardFields/CardDate";
-import CardLocation from "./CardFields/CardLocation";
-import CardID from "./CardFields/CardID";
-import CardText from "./CardFields/CardText";
-import { Card } from "@mui/material";
+// React
 import { useState } from "react";
-import { styled } from "@mui/system";
-import EntryCardHeader from "./EntryCardHeader";
-import EntryCardCollapse from "./EntryCardCollapse";
+// Material UI
+import { Card, styled } from "@mui/material";
+// App files
+import { TagDisplay } from "../Tags/IndexTags";
+import {
+    CardControls,
+    CardDate,
+    CardLocation,
+    CardID,
+    CardText,
+    EntryCardHeader,
+    EntryCardCollapse
+} from "../EntryCard/IndexEntryCard";
 
 const StyledCard = styled(Card)(({ theme, expanded }) => ({
     maxWidth: expanded ? "50vw" : "40vw",
@@ -25,22 +29,18 @@ const StyledCard = styled(Card)(({ theme, expanded }) => ({
     }
 }));
 
-// Expects a mode variable, which can be one of: "display", "edit", and "create"
+// Expects a mode variable, which can be one of: "DISPLAY", "EDIT", and "CREATE"
 const EntryCard = function ({
-    submitFunction = () => {},
-    deleteEntry = () => {
-        console.log(`<EntryCard/> -> default deleteEntry() handler function`);
-    },
     entry = {},
-    cancelToggle = () => {},
+    allTags,
     startCardMode = "DISPLAY",
     expanded,
     toggleExpand,
-    createEntryHandler,
-    allTags
+    createEntryHandler = () => {},
+    submitFunction = () => {},
+    deleteEntry = () => {},
+    cancelToggle = () => {}
 }) {
-    // ? Maybe relocate this to the timeline entry?
-    // ? It's going to take a lot of finagling to untangle all the state stuff with this
     // State setting
     const [localCardMode, setLocalCardMode] = useState(startCardMode);
     const [entryState, setEntryState] = useState(entry);
@@ -70,8 +70,6 @@ const EntryCard = function ({
     // Submit Functions
     const submitHandler = function () {
         submitFunction(entryState);
-        // This should probably be changed so that it doesn't invoke the edit toggle.
-        // The expanded variable might need tinkering?
         setLocalCardMode("DISPLAY");
     };
     // Delete

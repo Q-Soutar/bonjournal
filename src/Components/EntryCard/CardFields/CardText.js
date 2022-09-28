@@ -1,6 +1,7 @@
+// Material UI
 import { Typography } from "@mui/material";
 
-const CardText = function ({ handleFieldEdits, text, cardMode }) {
+const CardText = function ({ text, cardMode, handleFieldEdits }) {
     const textFieldTypingHandler = function (e) {
         handleFieldEdits("text", e.target.value);
     };

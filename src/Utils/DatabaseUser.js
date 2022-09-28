@@ -2,8 +2,6 @@ const DB_URL_BASE = "https://bonjournal-360318-default-rtdb.firebaseio.com";
 const AUTH_URL_BASE = "https://identitytoolkit.googleapis.com/v1/accounts";
 // TL = "top-level"
 const DB_USERS_TLKEY = "/users";
-const DB_ENTRIES_TLKEY = "/entries";
-const DB_TAGS_TLKEY = "/tags";
 const API_KEY = "AIzaSyCHDtn6M4QZ1XbL50d1HDFxK4ZrjvkQWUs";
 
 // User functions
@@ -14,10 +12,12 @@ export const dbGetUserData = function (userID, token) {
         const dbCallURL = `${DB_URL_BASE}${DB_USERS_TLKEY}${userKey}${auth}`;
         fetch(dbCallURL)
             .then((res) => {
+                console.log(res);
                 return res.json();
             })
             .then(
                 (data) => {
+                    console.log(data);
                     if (data.userEmail) resolve(data);
                     if (!data.userEmail) reject(undefined);
                 },
@@ -32,15 +32,19 @@ export const dbGetUserData = function (userID, token) {
     });
 };
 
-export const dbEditUserDataPartial = function (userID, token, userData) {
+export const dbEditUserDataPartial = function (
+    userID,
+    token,
+    { userEmail, userFirstName, userLastName, username }
+) {
     const userKey = `/${userID}`;
     const auth = `.json?auth=${token}`;
     const dbCallURL = `${DB_URL_BASE}${DB_USERS_TLKEY}${userKey}${auth}`;
     const body = JSON.stringify({
-        userEmail: userData.userEmail,
-        userFirstName: userData.userFirstName,
-        userLastName: userData.userLastName,
-        username: userData.username
+        userEmail: userEmail,
+        userFirstName: userFirstName,
+        userLastName: userLastName,
+        username: username
     });
     const headers = {
         "Content-Type": "application/json"
@@ -64,7 +68,7 @@ export const dbEditUserDataPartial = function (userID, token, userData) {
 
 export const dbEditUserDataFull = function (userID, token, userData) {
     return new Promise((resolve, reject) => {
-        authEditEmail(token, userData.userEmail)
+        authEditEmail(userData.userEmail, token)
             .then(
                 (newEmailInfo) => {
                     return new Promise((resolve, reject) => {
@@ -73,7 +77,7 @@ export const dbEditUserDataFull = function (userID, token, userData) {
                             newEmailInfo.token.token,
                             userData
                         )
-                            .then((data) => {
+                            .then(() => {
                                 resolve(newEmailInfo);
                             })
                             .catch((err) => {
@@ -94,7 +98,7 @@ export const dbEditUserDataFull = function (userID, token, userData) {
     });
 };
 
-export const authEditEmail = function (token, email) {
+export const authEditEmail = function (email, token) {
     return new Promise((resolve, reject) => {
         const auth = `?key=${API_KEY}`;
         const action = ":update";
@@ -114,14 +118,14 @@ export const authEditEmail = function (token, email) {
         };
         fetch(authCallURL, params)
             .then((res) => res.json())
-            .then((data) => {
+            .then(({ email, localId, idToken, refreshToken, expiresIn }) => {
                 const newEmailInfo = {
-                    email: data.email,
+                    email: email,
                     token: {
-                        userID: data.localId,
-                        token: data.idToken,
-                        refreshToken: data.refreshToken,
-                        expiry: data.expiresIn
+                        userID: localId,
+                        token: idToken,
+                        refreshToken: refreshToken,
+                        expiry: expiresIn
                     }
                 };
                 resolve(newEmailInfo);
@@ -133,14 +137,14 @@ export const authEditEmail = function (token, email) {
     });
 };
 // Needs to mirror the update sequence, with it being called immediately before a DB user update.
-export const authSignUpPartial = function (newUserInfo) {
+export const authSignUpPartial = function ({ userEmail, password }) {
     return new Promise((resolve, reject) => {
         const auth = `?key=${API_KEY}`;
         const action = ":signUp";
         const authCallURL = `${AUTH_URL_BASE}${action}${auth}`;
         const body = JSON.stringify({
-            email: newUserInfo.userEmail,
-            password: newUserInfo.password,
+            email: userEmail,
+            password: password,
             returnSecureToken: true
         });
         const headers = {
@@ -153,14 +157,14 @@ export const authSignUpPartial = function (newUserInfo) {
         };
         fetch(authCallURL, params)
             .then((res) => res.json())
-            .then((sessionToken) => {
+            .then(({ email, localId, idToken, refreshToken, expiresIn }) => {
                 const newEmailInfo = {
-                    email: sessionToken.email,
+                    email: email,
                     token: {
-                        userID: sessionToken.localId,
-                        token: sessionToken.idToken,
-                        refreshToken: sessionToken.refreshToken,
-                        expiry: sessionToken.expiresIn
+                        userID: localId,
+                        token: idToken,
+                        refreshToken: refreshToken,
+                        expiry: expiresIn
                     }
                 };
                 resolve(newEmailInfo);
@@ -175,7 +179,6 @@ export const authCreateUserFull = function (newUserInfo) {
             const token = sessionToken.token;
             dbEditUserDataPartial(token.userID, token, newUserInfo);
             resolve(token);
-            // start a user session
         });
     });
 };

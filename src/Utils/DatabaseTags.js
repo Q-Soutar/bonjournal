@@ -1,23 +1,7 @@
 const DB_URL_BASE = "https://bonjournal-360318-default-rtdb.firebaseio.com";
-const AUTH_URL_BASE = "https://identitytoolkit.googleapis.com/v1/accounts";
 // TL = "top-level"
-const DB_USERS_TLKEY = "/users";
 const DB_ENTRIES_TLKEY = "/entries";
 const DB_TAGS_TLKEY = "/tags";
-const API_KEY = "AIzaSyCHDtn6M4QZ1XbL50d1HDFxK4ZrjvkQWUs";
-
-// Tags calls
-/* 
-    Sample tag: {
-        uuid: "string",
-        text: "string",
-        entries: [
-            "uuid1",
-            "uuid2",
-            ...
-        ]
-    }
-*/
 
 export const dbInitTags = function (token, userID) {
     return new Promise((resolve, reject) => {
@@ -26,18 +10,21 @@ export const dbInitTags = function (token, userID) {
         const dbCallURL = `${DB_URL_BASE}${DB_TAGS_TLKEY}${userKey}${auth}`;
         fetch(dbCallURL)
             .then((res) => {
-                // console.dir(res.json());
                 return res.json();
             })
             .then((tags) => {
-                if (tags !== {} && tags !== [] && tags !== undefined) {
+                if (
+                    tags !== {} &&
+                    tags !== [] &&
+                    tags !== undefined &&
+                    tags !== null
+                ) {
                     const newTags = Object.keys(tags).map((key) => {
                         return {
                             ...tags[key],
                             uuid: key
                         };
                     });
-                    // const newEntriesSorted = newEntries.sort();
                     resolve(newTags);
                 }
             })
@@ -47,7 +34,7 @@ export const dbInitTags = function (token, userID) {
     });
 };
 
-export const dbGetTag = function (tagID, token, userID) {
+export const dbGetTag = function (tagID, userID, token) {
     return new Promise((resolve, reject) => {
         const userKey = `/${userID}`;
         const tagKey = `/${tagID}`;
@@ -98,7 +85,6 @@ export const dbUpdateTag = function (tag, entryID, userID, token) {
         const tagKey = `/${tag.uuid}`;
         const auth = `.json?auth=${token}`;
         const dbCallURL = `${DB_URL_BASE}${DB_TAGS_TLKEY}${userKey}${tagKey}${auth}`;
-        // May need to do the entry concat here, not sure
         const body = {
             text: tag.text,
             entries: tag.entries.concat(entryID)
@@ -162,7 +148,6 @@ export const dbTagWrite = function (
                     tagState.forEach((existingTag) => {
                         if (tag.text === existingTag.text) {
                             foundTag = existingTag;
-                            // Not sure how the array in the DB will react to an update version. Will it totally overwrite? Or will the existing entry IDs persist?
                         }
                     });
                     if (!foundTag) {

@@ -1,8 +1,8 @@
-import { useState } from "react";
-import EntryCard from "../EntryCard/EntryCard";
-import TimelineEnd from "./TimelineEnd";
-import TimelineEntry from "./TimelineEntry";
+// Material UI
+import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
+// App files
+import { TimelineEnd, TimelineEntry } from "./IndexTimeline";
 
 const Timeline = function ({
     entries,
@@ -43,7 +43,8 @@ const Timeline = function ({
             </Box>
         );
     } else {
-        return "No entries";
+        // Yeah, this doesn't acutally do anything
+        return <Typography>"No entries!"</Typography>;
     }
 };
 

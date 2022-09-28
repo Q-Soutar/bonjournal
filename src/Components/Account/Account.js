@@ -1,3 +1,7 @@
+// React
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+// Material UI
 import {
     Card,
     Box,
@@ -9,11 +13,12 @@ import {
     TextField
 } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import EditIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
-import CloseIcon from "@mui/icons-material/Close";
-import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { EditIcon, SaveIcon, CloseIcon } from "../../Utils/IndexIcons";
+import Email from "./Email";
+import Name from "./Name";
+import Username from "./Username";
+import Password from "./Password";
+import AccountControls from "./AccountControls";
 
 const StyledProfile = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -28,36 +33,21 @@ const StyledProfile = styled(Box)(({ theme }) => ({
     // width: "100%"
 }));
 
-const Account = function ({ mode, submitHandler }) {
-    const navigate = useNavigate();
-    const [editMode, setEditMode] = useState(mode === "SIGNUP" ? true : false);
-    console.log(`<Account/> -> editMode at start: ${editMode}`);
-    const toggleEditMode = function () {
-        setEditMode(!editMode);
-    };
-    const [accountInfo, setAccountInfo] = useState({ username: "" });
-    const [accountRevert, setAccountRevert] = useState({ username: "" });
-    const updateAccountInfo = function (field, value) {
-        setAccountInfo({
-            ...accountInfo,
-            [field]: value
-        });
-    };
-
-    const cancelHandler = function () {
-        toggleEditMode();
-        setAccountInfo(accountRevert);
-        if (mode === "SIGNUP") navigate("/login");
-    };
-
+// Expects mode, one of: "DISPLAY", "EDIT", "SIGNUP"
+const Account = function ({
+    submitHandler,
+    updateAccountInfo,
+    cancelHandler,
+    accountInfo,
+    editMode,
+    toggleEditMode = () => {}
+}) {
     const handleTyping = function (e) {
         updateAccountInfo(e.target.id, e.target.value);
     };
-
     const submitHandlerWrapper = function (e) {
         submitHandler(accountInfo);
     };
-
     return (
         <StyledProfile>
             <Box display="flex">
@@ -70,104 +60,38 @@ const Account = function ({ mode, submitHandler }) {
                     >
                         {accountInfo.username !== undefined && (
                             <Grid2 container spacing={2}>
-                                <Grid2 xs={10}>
-                                    {editMode ? (
-                                        <Box>
-                                            <TextField
-                                                id="userFirstName"
-                                                value={
-                                                    accountInfo.userFirstName
-                                                }
-                                                onChange={handleTyping}
-                                            />
-                                            <TextField
-                                                id="userLastName"
-                                                value={accountInfo.userLastName}
-                                                onChange={handleTyping}
-                                            />
-                                        </Box>
-                                    ) : (
-                                        <Typography variant="h4">
-                                            {`${accountInfo.userFirstName} ${accountInfo.userLastName}`}
-                                        </Typography>
-                                    )}
-                                </Grid2>
-                                <Grid2 xs={1}>
-                                    {editMode && (
-                                        <IconButton
-                                            onClick={submitHandlerWrapper}
-                                        >
-                                            <SaveIcon />
-                                        </IconButton>
-                                    )}
-                                </Grid2>
-                                <Grid2 xs={1}>
-                                    {!editMode && (
-                                        <IconButton onClick={toggleEditMode}>
-                                            <EditIcon />
-                                        </IconButton>
-                                    )}
-                                    {editMode && (
-                                        <IconButton onClick={cancelHandler}>
-                                            <CloseIcon />
-                                        </IconButton>
-                                    )}
-                                </Grid2>
+                                <Name
+                                    userFirstName={accountInfo.userFirstName}
+                                    userLastName={accountInfo.userLastName}
+                                    editMode={editMode}
+                                    handleTyping={handleTyping}
+                                />
+                                <AccountControls
+                                    editMode={editMode}
+                                    toggleEditMode={toggleEditMode}
+                                    submitHandlerWrapper={submitHandlerWrapper}
+                                    cancelHandler={cancelHandler}
+                                />
                                 <Grid2 xs={12}>
                                     <Typography variant="h5">
                                         Account Details
                                     </Typography>
                                 </Grid2>
-                                <Grid2 xs={6}>
-                                    <Typography>Username: </Typography>
-                                </Grid2>
-                                <Grid2 xs={6}>
-                                    {editMode ? (
-                                        <TextField
-                                            id="username"
-                                            value={accountInfo.username}
-                                            onChange={handleTyping}
-                                        />
-                                    ) : (
-                                        <Typography>
-                                            {accountInfo.username}
-                                        </Typography>
-                                    )}
-                                </Grid2>
-                                <Grid2 xs={6}>
-                                    <Typography>Email Address: </Typography>
-                                </Grid2>
-                                <Grid2 xs={6}>
-                                    {editMode ? (
-                                        <TextField
-                                            id="userEmail"
-                                            value={accountInfo.userEmail}
-                                            onChange={handleTyping}
-                                        />
-                                    ) : (
-                                        <Typography>
-                                            {accountInfo.userEmail}
-                                        </Typography>
-                                    )}
-                                </Grid2>
-                                <Grid2 xs={6}>
-                                    <Typography>
-                                        Password (NOT YET IMPLEMENTED)
-                                    </Typography>
-                                </Grid2>
-                                <Grid2 xs={6}>
-                                    {editMode ? (
-                                        <TextField
-                                            id="password"
-                                            value={accountInfo.password}
-                                            onChange={handleTyping}
-                                        />
-                                    ) : (
-                                        <Link href="#" underline="hover">
-                                            Reset
-                                        </Link>
-                                    )}
-                                </Grid2>
+                                <Username
+                                    username={accountInfo.username}
+                                    editMode={editMode}
+                                    handleTyping={handleTyping}
+                                />
+                                <Email
+                                    userEmail={accountInfo.userEmail}
+                                    handleTyping={handleTyping}
+                                    editMode={editMode}
+                                />
+                                <Password
+                                    password={accountInfo.password}
+                                    editMode={editMode}
+                                    handleTyping={handleTyping}
+                                />
                             </Grid2>
                         )}
                     </CardContent>

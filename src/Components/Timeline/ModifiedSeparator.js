@@ -1,14 +1,11 @@
-// React imoprts
-import { useContext } from "react";
-// Material UI imports
+// Material UI
 import { TimelineConnector, TimelineDot, TimelineSeparator } from "@mui/lab";
-import { IconButton, styled } from "@mui/material";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import EditIcon from "@mui/icons-material/Edit";
-import { Box } from "@mui/material";
-// App file imports
-// import EntriesContext from "../Context/EntriesContext";
+import { IconButton, styled, Box } from "@mui/material";
+import {
+    AddCircleIcon,
+    DeleteForeverIcon,
+    EditIcon
+} from "../../Utils/IndexIcons";
 
 const StyledTimelineSeparator = styled(TimelineSeparator)(({ theme }) => ({
     flex: "0 0 8vw",
@@ -35,10 +32,8 @@ const ModifiedSeparator = function ({
     deleteEntry,
     editModeToggle
 }) {
-    // const entriesCtx = useContext(EntriesContext);
     const deleteHandler = function () {
         toggleExpand();
-        // entriesCtx.deleteEntry(uuid);
         deleteEntry(uuid);
     };
     return (
@@ -55,7 +50,7 @@ const ModifiedSeparator = function ({
                     justifySelf: "center"
                 }}
             >
-                {expanded ? (
+                {/* {expanded ? ( // Disabled experimentation with putting card controls in the timeline itself. Partially abandonned for a range of styling and prop drill reasons. 
                     <Box
                         sx={{
                             display: "flex",
@@ -63,8 +58,6 @@ const ModifiedSeparator = function ({
                             backgroundColor: "#E5E4E2",
                             borderRadius: "50px",
                             height: "4vw",
-                            // padding: "0px",
-                            // margin: "0px",
                             alignSelf: "center",
                             justifySelf: "left",
                             borderWidth: "100px",
@@ -80,7 +73,8 @@ const ModifiedSeparator = function ({
                     </Box>
                 ) : (
                     <AddCircleIcon sx={{ opacity: "0%" }} />
-                )}
+                )} */}
+                <AddCircleIcon sx={{ opacity: "0%" }} />
             </TimelineDot>
             <TimelineConnector />
         </StyledTimelineSeparator>

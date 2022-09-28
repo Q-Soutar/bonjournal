@@ -1,11 +1,13 @@
-// Material UI imports
-import { CardHeader, Typography, Box } from "@mui/material";
-import { styled } from "@mui/material";
-import UnfoldLessIcon from "@mui/icons-material/UnfoldLess";
-import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
-import PublicIcon from "@mui/icons-material/Public";
-// App file imports
-import TagDisplay from "../Tags/TagDisplay";
+// Material UI
+import { CardHeader, Typography, Box, styled } from "@mui/material";
+import {
+    UnfoldLessIcon,
+    UnfoldMoreIcon,
+    PublicIcon
+} from "../../Utils/IndexIcons";
+// App files
+import { TagDisplay } from "../Tags/IndexTags";
+
 // This is not the best way to go about typography styling, but whatever it works well enough. I can circle back to merge it with the rest of the header styling.
 const StyledDate = styled(Typography)({
     fontWeight: "bold",
@@ -56,7 +58,6 @@ const EntryCardHeader = function ({
                             : formattedDate}
                     </StyledDate>
                     <StyledAddress>
-                        {/* {location.formattedAddress || "Parts Unknown"} */}
                         {cardMode === "CREATE" ? "" : formattedAddress}
                     </StyledAddress>
                     <PublicIcon></PublicIcon>

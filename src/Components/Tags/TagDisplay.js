@@ -1,36 +1,38 @@
-import Tag from "./Tag";
+// Is this file a mess? Yes. Do I intend to do anything about it? Not any time soon.
+
+// React
 import { useState } from "react";
-import { Box } from "@mui/system";
-// import { v4 as uuid } from "uuid";
-import { nanoid as uuid } from "nanoid";
+// Material UI
 import {
     Autocomplete,
     List,
     ListItem,
     ListItemText,
-    TextField
+    TextField,
+    Box
 } from "@mui/material";
+// App files
+import { Tag } from "./IndexTags";
+// NPM
+import { nanoid } from "nanoid";
+
 const ENTER_KEY_CODE = 13;
 
-/* 
-    Handling tags: 
-        - Creating a tag:
-            > Check for a tag
-*/
+// Started this before noticing the autocomplete component Material has. Retaining this though, since I ran into some issues actually using it.
+// Deferred for reasons noted elsewhere.
+// const suggestionsDropdown = function ({ suggestions }) {
+//     return suggestions.map((suggestion) => {
+//         return (
+//             <List>
+//                 <ListItem>
+//                     <ListItemText primary={suggestion} />
+//                 </ListItem>
+//             </List>
+//         );
+//     });
+// };
 
-const suggestionsDropdown = function ({ suggestions }) {
-    return suggestions.map((suggestion) => {
-        return (
-            <List>
-                <ListItem>
-                    <ListItemText primary={suggestion} />
-                </ListItem>
-            </List>
-        );
-    });
-};
-
-const TagDisplay = function ({ tags, handleEntryEdits, cardMode, allTags }) {
+const TagDisplay = function ({ tags, allTags, cardMode, handleEntryEdits }) {
     const tagsExist = tags.length > 0;
     const [tagField, changeTagField] = useState("");
     const [tagSuggestions, setTagSuggestions] = useState([]);
@@ -67,7 +69,7 @@ const TagDisplay = function ({ tags, handleEntryEdits, cardMode, allTags }) {
     const newTagHandler = function (tag) {
         const newTag = {
             text: tag,
-            uuid: uuid()
+            uuid: nanoid()
         };
         const newTags = localTags.concat(newTag);
         handleEntryEdits("tags", newTags);
@@ -78,9 +80,9 @@ const TagDisplay = function ({ tags, handleEntryEdits, cardMode, allTags }) {
     };
 
     const addTag = function (e) {
-        // * Filter out all keystrokes not "enter"
+        // Filter out all keystrokes not "enter"
         if (e.keyCode !== ENTER_KEY_CODE) return;
-        // * Filter out any empty field values
+        // Filter out any empty field values
         if (!e.target.value) {
             return;
         }
@@ -88,21 +90,21 @@ const TagDisplay = function ({ tags, handleEntryEdits, cardMode, allTags }) {
         clearField();
         toggleForceClear();
         e.preventDefault();
-        // * Inject the new tag into the form state's array, and clear the input
+        // Inject the new tag into the form state's array, and clear the input
         // if (props.formData.tags.length < 3) {
         //     const updatedTags = props.formData.tags.concat([e.target.value]);
         //     props.updateForm({ name: "tags", value: updatedTags });
         //     clearField();
         // } else {
-        //     // * In the event more than three are entered
+        //     // In the event more than three are entered
         //     console.error("Tag limit exceeded");
         // }
-        // * Stops it from doing a form submit on enter. Tried putting it at the top, but this prevented any typing from happening.
+        // Stops it from doing a form submit on enter. Tried putting it at the top, but this prevented any typing from happening.
     };
     return (
         <Box>
             {cardMode !== "DISPLAY" && (
-                <Autocomplete
+                /* <Autocomplete
                     fullWidth
                     key={forceClear}
                     options={tagSuggestions}
@@ -122,6 +124,12 @@ const TagDisplay = function ({ tags, handleEntryEdits, cardMode, allTags }) {
                             }}
                         />
                     )}
+                />*/
+                <TextField
+                    label="Tags"
+                    value={tagField}
+                    onKeyDown={addTag}
+                    onChange={handleTyping}
                 />
             )}
             <Box sx={{ display: "flex", flexDirection: "row" }}>

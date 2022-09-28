@@ -1,25 +1,30 @@
-// import logo from "./logo.svg";
+// React
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+// Material UI
+import { Box } from "@mui/material";
+
+// NPM
+import { nanoid } from "nanoid";
+
+// App files
+import { Timeline } from ".././Components/Timeline/IndexTimeline";
+// import logo from "./logo.svg";
 import {
     dbInitEntries,
     dbCreateEntry,
     dbDeleteEntry,
-    dbUpdateEntry,
-    dbCreateTag,
-    dbTagWrite
-} from "../Utils/Database";
-// import { v4 as uuid } from "uuid";
-import { nanoid as uuid } from "nanoid";
-import Timeline from ".././Components/Timeline/Timeline";
-import { Box, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+    dbUpdateEntry
+} from "../Utils/DatabaseEntries";
 import AuthContext from "../Context/AuthContext";
-// import { dbInitTags } from "../Utils/DatabaseTags";
-import { dbInitTags } from "../Utils/DatabaseTags.js";
+import { dbInitTags, dbTagWrite } from "../Utils/DatabaseTags.js";
 
 const GMAP_API_KEY = "";
 const GC_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json?";
 const GC_RESULT_TYPE = "country|sublocality|administrative_area_level_1";
+
+const tagDebug = false;
 
 /*
     Concept for managing the props and callbacks:
@@ -41,28 +46,15 @@ function Home() {
         document.getElementById("end").scrollIntoView();
     };
 
-    // const isLoggedIn = !!authCtx.token;
-
     const createEntryHandler = function (newEntry) {
-        // e.preventDefault();
-        // console.log();
-        newEntry.uuid = uuid();
+        newEntry.uuid = nanoid();
         newEntry.date = Date.now();
         setLocation()
             .then((pos) => {
-                // console.log(
-                //     `<Home/> -> createEntryHandler() -> setLocation().then() -> Location received`
-                // );
                 newEntry.location = {
                     lat: pos.coords.latitude,
                     long: pos.coords.longitude
                 };
-                // console.log(
-                //     `<Home/> -> createEntryHandler() -> setLocation().then() -> Location set`
-                // );
-                // console.log(
-                //     `<Home/> -> createEntryHandler() -> setLocation().then() -> Sending new entry to DB`
-                // );
                 dbCreateEntry(
                     newEntry,
                     authCtx.userID,
@@ -85,20 +77,24 @@ function Home() {
                         })
                         .catch((err) => console.error(err));
                 });
-                // newEntry.tags.forEach((tag) => {
-                //     dbCreateTag(
-                //         tag,
-                //         newEntry.uuid,
-                //         authCtx.userID,
-                //         authCtx.token
-                //     );
-                // });
-                // console.log(
-                //     `<Home/> -> createEntryHandler() -> setLocation().then() -> DB call initiated, reverting createEntryMode state`
-                // );
                 createEntryToggle();
             })
             .catch((err) => console.log(err));
+    };
+
+    /* 
+        For each entry, find the tags in the tags array that matches the UUID in the entry tags array
+
+    */
+
+    const assignTags = function () {
+        entries.map((entry) => {
+            entry.tags.map((entryTag) => {
+                return tags.find((stateTag) => {
+                    return stateTag.uuid === entryTag;
+                });
+            });
+        });
     };
 
     const setLocation = function () {
@@ -107,6 +103,7 @@ function Home() {
         });
     };
 
+    // Deactivated for the purposes of not accidentally racking up a mondo bill
     const revGeocode = function (newEntry = {}, callback) {
         const geoCallURL = `${GC_BASE_URL}latlng=${newEntry.location.lat},${
             newEntry.location.long
@@ -137,9 +134,6 @@ function Home() {
 
     const editEntryHandler = function (editedEntry) {
         // Identify altered fields, exclude the rest
-        console.log(`<Home/> -> editEntryHandler() -> function called`);
-        console.log(`<Home/> -> editEntryHandler() -> editedEntry: `);
-        console.log(editedEntry);
         const oldEntry = entries.find(
             (entry) => entry.uuid === editedEntry.uuid
         );
@@ -164,7 +158,7 @@ function Home() {
             );
         }
     };
-
+    // Relocate to tags util file
     const tagsCompare = function (tags1, tags2) {
         if (tags1.length !== tags2.length) {
             return false;
@@ -182,30 +176,19 @@ function Home() {
     };
 
     const deleteEntryHandler = function (entryID) {
-        console.log(`<Home/> -> deleteEntryHandler() -> function called`);
         dbDeleteEntry(
+            entryID,
             authCtx.userID,
             authCtx.token,
-            entryID,
             setEntries,
             dbInitEntries
         );
     };
 
-    const logoutHandler = function () {
-        authCtx.signOut();
-        navigate("/");
-    };
-
     const initApp = function () {
-        // Need to normalize DB call params pattern
         dbInitEntries(authCtx.userID, authCtx.token, timelineInit);
         dbInitTags(authCtx.token, authCtx.userID)
             .then((tags) => {
-                console.log(
-                    `<Home> -> initApp() -> dbInitTags().then() -> tags: `
-                );
-                console.dir(tags);
                 setTags(tags);
             })
             .catch((err) => console.error(err));
@@ -229,16 +212,18 @@ function Home() {
                 createEntryToggle={createEntryToggle}
                 setCreateMode={setCreateEntryMode}
             />
-            <Box>
-                {tags.map((tag) => {
-                    return (
-                        <p key={tag.uuid}>
-                            {JSON.stringify(tag)}
-                            <br></br>
-                        </p>
-                    );
-                })}
-            </Box>
+            {tagDebug && (
+                <Box>
+                    {tags.map((tag) => {
+                        return (
+                            <p key={tag.uuid}>
+                                {JSON.stringify(tag)}
+                                <br></br>
+                            </p>
+                        );
+                    })}
+                </Box>
+            )}
         </div>
     );
 }

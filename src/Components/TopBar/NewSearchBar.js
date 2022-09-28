@@ -1,5 +1,3 @@
-// React imports
-import { useContext } from "react";
 // Material UI imports
 import { InputBase, styled, Box } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -33,7 +31,7 @@ const StyledInput = styled(InputBase)({
         width: "80px",
         transition: "width 0.25s",
         // The fact that this is the pseudo-class used for the focus state, and no a Mui- one is a
-        // dreaful inconsistency from most other components.
+        // dreadful inconsistency from most other components.
         "&:focus": {
             width: "200px",
             transition: "width 0.25s"
@@ -45,21 +43,22 @@ const StyledInput = styled(InputBase)({
     }
 });
 
+// Deferring recreation of the search bar because of the limitations of Firebase Realtime Database searches and sorts. Will recreate it after developing the backend myself.
 const NewSearchBar = function () {
-    // const entriesCtx = useContext(EntriesContext);
-    // ? What does this handler name mean?
-    const searchHandler = function (e) {
-        const searchParams = {
-            filtered: true,
-            tagFilter: e.target.value
-        };
-        // entriesCtx.updateFilters(searchParams);
-    };
+    // // const entriesCtx = useContext(EntriesContext);
+    // // ? What does this handler name mean?
+    // const searchHandler = function (e) {
+    //     const searchParams = {
+    //         filtered: true,
+    //         tagFilter: e.target.value
+    //     };
+    //     // entriesCtx.updateFilters(searchParams);
+    // };
 
     return (
         <SearchContainer>
             <StyledSearchIcon />
-            <StyledInput placeholder="Search" onChange={searchHandler} />
+            <StyledInput placeholder="Search" />
         </SearchContainer>
     );
 };
