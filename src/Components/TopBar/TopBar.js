@@ -2,27 +2,13 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 // Material UI
-import {
-    Box,
-    Toolbar,
-    AppBar,
-    IconButton,
-    styled,
-    Menu,
-    Button,
-    MenuItem
-} from "@mui/material";
-import {
-    Logout,
-    AccountCircleIcon,
-    SettingsIcon,
-    PersonIcon,
-    FormatListBulletedIcon
-} from "../../Utils/IndexIcons";
+import { Box, Toolbar, AppBar, IconButton, styled } from "@mui/material";
+import { AccountCircleIcon, SettingsIcon } from "../../Utils/IndexIcons";
 // App files
-import { NewSearchBar } from "./IndexTopBar";
+// import { NewSearchBar } from "./IndexTopBar";
 import stamp_red from "../../img/stamp_red.png";
 import AuthContext from "../../Context/AuthContext";
+import TopMenuBar from "./TopBarMenu";
 
 // Since the predfined 'large' fails to work in this situation I've opted to just yoink the h4 or h3 fontsize (I'm undecided still). It's close enough and I can centrally manage it from the theme easily. Might create a dedicated key for this later but for now I can't be bothered.
 const MenuContainer = styled(Box)(({ theme }) => ({
@@ -49,29 +35,32 @@ const MenuContainer = styled(Box)(({ theme }) => ({
 //     }
 // `;
 
-// Relocate the menu container to a new component
+// App bar component to contain various functionality like searches and links to various pages.
 const TopBar = function () {
+    // Context and state
     const authCtx = useContext(AuthContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const navigate = useNavigate();
+    // Menu state handlers
     const handleMenuOpen = function (e) {
         setAnchorEl(e.currentTarget);
     };
     const handleMenuClose = function () {
         setAnchorEl(null);
     };
-    const logoutHandler = function () {
+    // Menu link functions
+    const journalLink = function () {
         handleMenuClose();
-        authCtx.signOut();
+        navigate("home");
     };
     const profileLink = function () {
         handleMenuClose();
         navigate("/profile");
     };
-    const journalLink = function () {
+    const logoutHandler = function () {
         handleMenuClose();
-        navigate("home");
+        authCtx.signOut();
     };
     // Search bar removed due to functionality being currently unavailable thanks to a ton a reasons
     return (
@@ -87,25 +76,14 @@ const TopBar = function () {
                         <IconButton onClick={handleMenuOpen}>
                             <AccountCircleIcon />
                         </IconButton>
-                        <Menu
+                        <TopMenuBar
                             anchorEl={anchorEl}
+                            handleMenuClose={handleMenuClose}
                             open={open}
-                            onClose={handleMenuClose}
-                        >
-                            <MenuItem key="journal" onClick={journalLink}>
-                                <Button endIcon={<FormatListBulletedIcon />}>
-                                    Journal
-                                </Button>
-                            </MenuItem>
-                            <MenuItem key="profile" onClick={profileLink}>
-                                <Button endIcon={<PersonIcon />}>
-                                    Profile
-                                </Button>
-                            </MenuItem>
-                            <MenuItem key="logout" onClick={logoutHandler}>
-                                <Button endIcon={<Logout />}>Logout</Button>
-                            </MenuItem>
-                        </Menu>
+                            journalLink={journalLink}
+                            profileLink={profileLink}
+                            logoutHandler={logoutHandler}
+                        />
                     </MenuContainer>
                 )}
             </Toolbar>

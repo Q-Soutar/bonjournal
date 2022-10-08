@@ -1,6 +1,6 @@
-const TOKEN_TTL = 3600; // 1 hour, 60*60, per Firebase docs
-const MAX_SESSION_LENGTH = 2592000; // 30 days, 60*60*24*30, chosen semi-arbitrarily.
+import { TOKEN_TTL, MAX_SESSION_LENGTH } from "./Config";
 
+// Store received token in browser cookies
 export const storeToken = function (tokenData) {
     const { token, refreshToken, expiry, userID } = tokenData;
     // Convert token data to cookie strings
@@ -16,11 +16,13 @@ export const storeToken = function (tokenData) {
     document.cookie = expiryCookie;
     document.cookie = userIDCookie;
     return new Promise(function (resolve, reject) {
+        // Reoslve promise, pass along the token data
         resolve(tokenData);
     });
 };
-
+// Get any tokens from the browser storage
 export const retrieveTokens = function () {
+    // Pull the cookies out, split them apart into constitutent cookies / fields
     const cookies = document.cookie
         .split(";")
         .map((cookie) => cookie.trim())
@@ -34,6 +36,7 @@ export const retrieveTokens = function () {
             };
             return newAllCookies;
         }, {});
+    // Merge tokens into a coherent token object
     const storedToken = {
         token: cookies.token ? cookies.token : undefined,
         expiry: new Date(cookies.expiry).getTime() - Date.now(),
@@ -41,10 +44,11 @@ export const retrieveTokens = function () {
         userID: cookies.user_id ? cookies.user_id : undefined
     };
     return new Promise(function (resolve, reject) {
+        // Resolve with the retrieved token
         resolve(storedToken);
     });
 };
-
+// Clear any tokens stored in the browser
 export const clearStoredTokens = function () {
     // Write blank values to cookies
     const tokenCookie = `token=; max-age=-1; secure`;

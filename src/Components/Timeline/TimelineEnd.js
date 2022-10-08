@@ -50,6 +50,7 @@ const StyledTimelineItem = styled(TimelineItem)(({ theme }) => ({
 //     }
 // }));
 
+// Bottom of the timeline. Also acts as the spot where new entries are created.
 const TimelineEnd = function ({
     createEntryHandler,
     createEntryMode,

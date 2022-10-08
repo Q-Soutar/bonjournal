@@ -1,7 +1,7 @@
 // React
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // Material UI
-import { Card, styled } from "@mui/material";
+import { Box, Card, styled, Typography } from "@mui/material";
 // App files
 import { TagDisplay } from "../Tags/IndexTags";
 import {
@@ -28,7 +28,14 @@ const StyledCard = styled(Card)(({ theme, expanded }) => ({
         transition: "outline 0.25s, margin-left 0.15s, max-width 0.15s"
     }
 }));
+// Default state for formValidity
+const defaultFormValidity = {
+    textField: false,
+    tagsField: false,
+    submitAttempt: false
+};
 
+// General use display for entry data. Doubles as a form for creating and editing entries.
 // Expects a mode variable, which can be one of: "DISPLAY", "EDIT", and "CREATE"
 const EntryCard = function ({
     entry = {},
@@ -44,11 +51,12 @@ const EntryCard = function ({
     // State setting
     const [localCardMode, setLocalCardMode] = useState(startCardMode);
     const [entryState, setEntryState] = useState(entry);
+    const [formValidity, setFormValidity] = useState(defaultFormValidity);
     const { uuid, date, text, location, tags = [] } = entryState;
     const revertState = entry;
     const entryDebug = false;
 
-    // Mode management
+    // Mode management. Toggles between display mode and form modes.
     const editModeToggle = function () {
         if (localCardMode === "EDIT") setLocalCardMode("DISPLAY");
         if (localCardMode === "DISPLAY") setLocalCardMode("EDIT");
@@ -59,7 +67,7 @@ const EntryCard = function ({
         if (localCardMode === "EDIT") editModeToggle();
     };
 
-    // Field Management
+    // Field change management and state updating
     const handleFieldEdits = function (field, value) {
         setEntryState({
             ...entryState,
@@ -67,10 +75,16 @@ const EntryCard = function ({
         });
     };
 
-    // Submit Functions
+    // Submit Function
     const submitHandler = function () {
-        submitFunction(entryState);
-        setLocalCardMode("DISPLAY");
+        if (formValidity.tagsField && formValidity.textField) {
+            submitFunction(entryState);
+            // setFormData(defaultForm);
+            // setFormValidity(defaultFormValidity);
+            setLocalCardMode("DISPLAY");
+            return;
+        }
+        setFormValidity({ ...formValidity, submitAttempt: true });
     };
     // Delete
     const deleteHandler =
@@ -79,6 +93,56 @@ const EntryCard = function ({
             : function () {
                   deleteEntry(uuid);
               };
+
+    // Form validation functions
+    const checkTagsValidity = function () {
+        if (entryState.tags) {
+            if (entryState.tags.length > 0 && entryState.tags.length <= 3) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    };
+    const checkTextValidity = function () {
+        if (entryState.text) {
+            if (entryState.text.length >= 25) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        // if (entryState.text.length < 25) {
+        // }
+    };
+    // const submitHandler = function (e) {
+    //     e.preventDefault();
+    //     if (formValidity.tagsField && formValidity.textField) {
+    //         // entriesCtx.createEntry(formData);
+    //         dbCreateEntry(formData);
+    //         setFormData(defaultForm);
+    //         setFormValidity(defaultFormValidity);
+    //         props.modalClose();
+    //         return;
+    //     }
+    //     setFormValidity({ ...formValidity, submitAttempt: true });
+    // };
+
+    // Validate form
+    useEffect(() => {
+        const textValid = checkTextValidity();
+        const tagsValid = checkTagsValidity();
+        setFormValidity({
+            ...formValidity,
+            textField: textValid,
+            tagsField: tagsValid
+        });
+    }, [entryState]);
+
     return (
         <StyledCard
             expanded={expanded}
@@ -91,12 +155,14 @@ const EntryCard = function ({
                 cardMode={localCardMode}
                 handleEntryEdits={handleFieldEdits}
                 allTags={allTags}
+                formValidity={formValidity}
             />
             <EntryCardCollapse
                 text={entryState.text}
                 expanded={expanded}
                 handleFieldEdits={handleFieldEdits}
                 cardMode={localCardMode}
+                formValidity={formValidity}
                 controls={
                     <CardControls
                         cardMode={localCardMode}
@@ -109,7 +175,31 @@ const EntryCard = function ({
                 }
             />
             {entryDebug && (
-                <div>
+                <Box>
+                    <Typography>Form Validity:</Typography>
+                    <Typography
+                        sx={{ color: formValidity.textField ? "green" : "red" }}
+                    >
+                        textField: {JSON.stringify(formValidity.textField)}
+                    </Typography>
+                    <Typography
+                        sx={{ color: formValidity.tagsField ? "green" : "red" }}
+                    >
+                        tagsField: {JSON.stringify(formValidity.tagsField)}
+                    </Typography>
+                    <Typography
+                        sx={{ color: formValidity.formError ? "green" : "red" }}
+                    >
+                        formError: {JSON.stringify(formValidity.formError)}
+                    </Typography>
+                    <Typography
+                        sx={{
+                            color: formValidity.submitAttempt ? "green" : "red"
+                        }}
+                    >
+                        submitAttempt:{" "}
+                        {JSON.stringify(formValidity.submitAttempt)}
+                    </Typography>
                     <CardDate date={date} cardMode={localCardMode} />
                     <CardText
                         text={text}
@@ -126,7 +216,7 @@ const EntryCard = function ({
                         cardMode={localCardMode}
                     />
                     <CardID uuid={uuid} cardMode={localCardMode} />
-                </div>
+                </Box>
             )}
         </StyledCard>
     );

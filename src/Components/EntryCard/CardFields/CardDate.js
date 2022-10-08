@@ -1,10 +1,12 @@
+import { Box, Typography } from "@mui/material";
+
 const CardDate = function ({ date, cardMode = "DISPLAY" }) {
     if (cardMode !== "CREATE") {
         return (
-            <div>
-                <h3>Date: </h3>
-                <p>{new Date(date).toDateString()}</p>
-            </div>
+            <Box>
+                <Typography>Date: </Typography>
+                <Typography>{new Date(date).toDateString()}</Typography>
+            </Box>
         );
     }
     return null;

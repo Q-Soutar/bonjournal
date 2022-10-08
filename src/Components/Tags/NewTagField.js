@@ -8,19 +8,23 @@ import { ENTER_KEY_CODE } from "../../Utils/Config";
 // Not presently utilized; brought over from previous iteration of the app; might be re-implemented
 
 const JFTagField = function ({ formData, updateForm, formValidity }) {
+    // State
     const [tagField, changeTagField] = useState("");
     // const { tags } = formData;
     // const { submitAttempt, tagsField } = formValidity;
 
+    // State updates to handle type/keystroke events
     const handleTyping = function (e) {
         const char = e.target.value.toLowerCase();
         console.log(char);
         if (char !== " ") changeTagField(char);
     };
+    // Reset field to default; for after a tag is entered
     const clearField = function () {
         changeTagField("");
     };
 
+    // Tag submission bsaed on enter keystroke. Needs to check for that and ignore all other keystrokes. Then (eventually) validates the tag, and appends it to the array in the state.
     const addTag = function (e) {
         // Filter out all keystrokes not "enter"
         if (e.keyCode !== ENTER_KEY_CODE) return;

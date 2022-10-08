@@ -1,3 +1,4 @@
+// Base styling for the app. Currently has the dark theme disabled because of issues with it. Will revisit later.
 export const themeOptions = {
     custom: {
         appbarIconSpacing: "auto"

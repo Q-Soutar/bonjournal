@@ -37,10 +37,13 @@ const EntryCardHeader = function ({
     expanded,
     cardMode,
     handleEntryEdits,
-    allTags
+    allTags,
+    formValidity
 }) {
     const { location, date, tags } = entry;
+    // Date formatting for display purposes
     const formattedDate = new Date(date).toDateString();
+    // Address formatting for display purposes
     // Nested ternary due to unidentified inconsistencies in the location objects passed in (I know, I hate it too)
     const formattedAddress =
         location === undefined
@@ -71,6 +74,7 @@ const EntryCardHeader = function ({
                     allTags={allTags}
                     cardMode={cardMode}
                     handleEntryEdits={handleEntryEdits}
+                    formValidity={formValidity}
                 />
             }
             expanded={expanded}

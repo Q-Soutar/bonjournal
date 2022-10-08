@@ -5,15 +5,17 @@ import { useNavigate } from "react-router-dom";
 import AuthContext from "./AuthContext";
 import { getNewToken, authInit, startSession, logout } from "../Utils/Auth";
 
+// App-wide auth state
 const AuthProvider = function (props) {
+    // State & friends
     const [token, setToken] = useState(null);
     const [refreshToken, setRefreshToken] = useState(null);
     const [userID, setUserID] = useState(null);
     const navigate = useNavigate();
+    // Update current authnetication info based on a token param
     const setAuth = function (tokenData) {
         if (tokenData) {
             const { token, refreshToken, userID } = tokenData;
-
             setToken(token);
             setRefreshToken(refreshToken);
             setUserID(userID);
@@ -24,10 +26,7 @@ const AuthProvider = function (props) {
         setUserID(null);
     };
 
-    useEffect(() => {
-        authInit(setAuth);
-    }, []);
-
+    // Receive credentials and use those to call firebase authentication functions
     const loginHandler = function (email, password) {
         return new Promise((resolve, reject) => {
             getNewToken(email, password)
@@ -42,6 +41,7 @@ const AuthProvider = function (props) {
                 });
         });
     };
+    // Logs the user out, wipes the tokens, "ends" the session (unless they're a lunatic backed those cookies up somewhere and manually replace them)
     const logoutHandler = function () {
         setAuth();
         logout().then((tokensCleared) => {
@@ -49,9 +49,15 @@ const AuthProvider = function (props) {
         });
     };
 
+    // Wrapper for initiating new user sessions based on received credentials.
     const sessionInitHandler = function (newToken) {
         startSession(newToken, setAuth);
     };
+
+    // Hook to kick off auth state from the page load
+    useEffect(() => {
+        authInit(setAuth);
+    }, []);
 
     const authValue = {
         token: token,

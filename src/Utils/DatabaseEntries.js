@@ -1,24 +1,26 @@
-const DB_URL_BASE = "https://bonjournal-360318-default-rtdb.firebaseio.com";
-// TL = "top-level"
-const DB_ENTRIES_TLKEY = "/entries";
-
+import { DB_URL_BASE, DB_ENTRIES_TLKEY } from "./Config";
+// Retrieve entries on app start
 export const dbInitEntries = function (userID, token, callback) {
+    // Fetch call setup
     const userKey = `/${userID}`;
     const auth = `.json?auth=${token}`;
     const orderBy = `&orderBy="date"`;
-    const startTime = Date.now() - 30 * 24 * 60 * 60;
+    // const startTime = Date.now() - 30 * 24 * 60 * 60;
     // const startAt = `&startAt=${startTime}`;
     const limitToFirst = `&limitToFirst=25`;
     const dbCallURL = `${DB_URL_BASE}${DB_ENTRIES_TLKEY}${userKey}${auth}${orderBy}${limitToFirst}`;
+    // Make fetch call
     fetch(dbCallURL)
         .then((res) => res.json())
         .then((entries) => {
+            // Make sure any entries are actually there; apparently falsey wasn't good enough here so I had to get real verbose
             if (
                 entries !== {} &&
                 entries !== [] &&
                 entries !== undefined &&
                 entries !== null
             ) {
+                // Format and sort the entries
                 const newEntries = Object.keys(entries)
                     .map((key) => {
                         return {
@@ -31,12 +33,14 @@ export const dbInitEntries = function (userID, token, callback) {
                         if (a.date < b.date) return -1;
                         return 0;
                     });
+                // Execute that call, ie write the entries to the state
                 callback(newEntries);
             }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
 };
-
+// Refactor for updated promise logic
+// Write a new entry to the database
 export const dbCreateEntry = function (
     entry,
     userID,
@@ -44,6 +48,7 @@ export const dbCreateEntry = function (
     callback1,
     callback2
 ) {
+    // Set up fetch call
     const { uuid, ...newEntry } = entry;
     const userKey = `/${userID}`;
     const entryKey = `/${uuid}`;
@@ -52,6 +57,7 @@ export const dbCreateEntry = function (
     const body = {
         ...newEntry
     };
+    // Make fetch call
     fetch(dbCallURL, {
         method: "PUT",
         body: JSON.stringify(body),
@@ -64,6 +70,7 @@ export const dbCreateEntry = function (
             if (!res.ok) throw new Error(res.json());
         })
         .then(() => {
+            // Execute callback; ie, refresh the entries state
             if (callback2) callback2(userID, token, callback1);
         })
         .catch((err) => {
@@ -72,7 +79,9 @@ export const dbCreateEntry = function (
         });
 };
 
-// Merge this with the create function since they are basically the exact same thing.
+// Refactor for updated promise logic
+// Eventually merge this with the create function since they are basically the exact same thing.
+// Write updates to firebase
 export const dbUpdateEntry = function (
     entry,
     userID,
@@ -80,6 +89,7 @@ export const dbUpdateEntry = function (
     callback1,
     callback2
 ) {
+    // Set up fetch call
     const { uuid, ...entryUpdates } = entry;
     const userKey = `/${userID}`;
     const entryKey = `/${uuid}`;
@@ -88,6 +98,7 @@ export const dbUpdateEntry = function (
     const body = {
         ...entryUpdates
     };
+    // Make fetch call
     fetch(dbCallURL, {
         method: "PATCH",
         body: JSON.stringify(body),
@@ -100,6 +111,7 @@ export const dbUpdateEntry = function (
             if (!res.ok) throw new Error(res.json());
         })
         .then(() => {
+            // Execute a timeline refresh via the callbacks
             if (callback2) callback2(userID, token, callback1);
         })
         .catch((err) => {
@@ -108,6 +120,7 @@ export const dbUpdateEntry = function (
         });
 };
 
+// Delete an entry from firebase
 export const dbDeleteEntry = async function (
     entryID,
     userID,
@@ -115,10 +128,12 @@ export const dbDeleteEntry = async function (
     callback1,
     callback2
 ) {
+    // Set up fetch call
     const userKey = `/${userID}`;
     const entryKey = `/${entryID}`;
     const auth = `.json?auth=${token}`;
     const dbCallURL = `${DB_URL_BASE}${DB_ENTRIES_TLKEY}${userKey}${entryKey}${auth}`;
+    // Make fetch call / return promise
     return fetch(dbCallURL, {
         method: "DELETE"
     })
@@ -127,11 +142,12 @@ export const dbDeleteEntry = async function (
             if (!res.ok) throw new Error(res.json());
         })
         .then((data) => {
+            // Update the entries state based on firebase
             if (callback2) callback2(userID, token, callback1);
             return data;
         })
         .catch((err) => {
-            console.log(`Entry deletion failed`);
+            console.error(`Entry deletion failed`);
             console.dir(err);
         });
 };

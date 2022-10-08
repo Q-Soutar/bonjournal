@@ -1,10 +1,12 @@
+import { Box, Typography } from "@mui/material";
+
 const CardID = function ({ uuid, cardMode = "DISPLAY" }) {
     if (cardMode !== "CREATE") {
         return (
-            <div>
-                <h3>Entry ID: </h3>
-                <p>{uuid}</p>
-            </div>
+            <Box>
+                <Typography>Entry ID: </Typography>
+                <Typography>{uuid}</Typography>
+            </Box>
         );
     }
     return null;

@@ -8,6 +8,7 @@ const StyledChip = styled(Chip)({
 });
 
 const Tag = function ({ tag, cardMode, deleteTagHandler }) {
+    // Wrapper to properly call the deletion function from props
     const deleteTagWrapper = function () {
         deleteTagHandler(tag);
     };

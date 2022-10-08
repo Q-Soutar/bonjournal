@@ -10,7 +10,7 @@ import SearchIcon from "@mui/icons-material/Search";
     to have this thing start out as a circle around the icon, that exapnds when you mouse
     over it. However, once the mouse hover goes away, it shrinks back, creating a weird
     scenario where the field text is over nothing. From what I can tell online, there is
-    no particularly "easy" way to fix this. The current version is good enough though.
+    no particularly "easy" way to fix this. The current version is good enough though as far as I care.
 */
 
 const SearchContainer = styled(Box)({
@@ -45,16 +45,6 @@ const StyledInput = styled(InputBase)({
 
 // Deferring recreation of the search bar because of the limitations of Firebase Realtime Database searches and sorts. Will recreate it after developing the backend myself.
 const NewSearchBar = function () {
-    // // const entriesCtx = useContext(EntriesContext);
-    // // ? What does this handler name mean?
-    // const searchHandler = function (e) {
-    //     const searchParams = {
-    //         filtered: true,
-    //         tagFilter: e.target.value
-    //     };
-    //     // entriesCtx.updateFilters(searchParams);
-    // };
-
     return (
         <SearchContainer>
             <StyledSearchIcon />

@@ -1,6 +1,6 @@
 // Material UI
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { Box, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { EditIcon, SaveIcon, CloseIcon } from "../../Utils/IndexIcons";
 
 const AccountControls = function ({

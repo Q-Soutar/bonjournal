@@ -1,3 +1,5 @@
+// If this ended up in the github, ignore it. I pulled this from the matieral UI site as a reference for a kind of searchbard functionality I would like in the future. 
+
 // SAMPLE 1
 import * as React from 'react';
 import Stack from '@mui/material/Stack';

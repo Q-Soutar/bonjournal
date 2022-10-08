@@ -9,12 +9,14 @@ const StyledCardContent = styled(CardContent)({
         wordWrap: "break-word"
     }
 });
+// Collapsible section of the entry card
 const EntryCardCollapse = function ({
     text,
     expanded,
     controls,
     cardMode,
-    handleFieldEdits
+    handleFieldEdits,
+    formValidity
 }) {
     return (
         <Collapse in={expanded} timeout="auto" unmountOnExit>
@@ -23,6 +25,7 @@ const EntryCardCollapse = function ({
                     text={text}
                     cardMode={cardMode}
                     handleFieldEdits={handleFieldEdits}
+                    formValidity={formValidity}
                 />
             </StyledCardContent>
             {controls}

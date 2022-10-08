@@ -15,6 +15,24 @@ export const GC_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json?";
  * @constant {string}
  */
 export const GC_RESULT_TYPE = "country|sublocality|administrative_area_level_1";
+export const SIGN_IN_BASE_URL = "https://identitytoolkit.googleapis.com/v1/";
+export const REFRESH_BASE_URL = "https://securetoken.googleapis.com/v1/";
+export const SIGN_IN_PATH = "accounts:signInWithPassword?key=";
+export const REFRESH_PATH = "token?key=";
+export const API_KEY = "AIzaSyCHDtn6M4QZ1XbL50d1HDFxK4ZrjvkQWUs";
+
+// TL = "top-level"
+export const DB_URL_BASE =
+    "https://bonjournal-360318-default-rtdb.firebaseio.com";
+export const DB_ENTRIES_TLKEY = "/entries";
+export const DB_TAGS_TLKEY = "/tags";
+export const AUTH_URL_BASE =
+    "https://identitytoolkit.googleapis.com/v1/accounts";
+export const DB_USERS_TLKEY = "/users";
+
+export const TOKEN_TTL = 3600; // 1 hour, 60*60, per Firebase docs
+export const MAX_SESSION_LENGTH = 2592000; // 30 days, 60*60*24*30, chosen semi-arbitrarily.
+
 export const DEFAULT_ENTRIES = [
     {
         uuid: nanoid(),

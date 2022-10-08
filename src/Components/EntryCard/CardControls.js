@@ -8,6 +8,7 @@ import {
     IconButton
 } from "../../Utils/IndexIcons";
 
+// Set of buttons to control the entry card
 const CardControls = function ({
     cardMode = "DISPLAY",
     deleteHandler = () => {},
@@ -15,6 +16,7 @@ const CardControls = function ({
     editModeToggle = () => {},
     cancelHandler = () => {}
 }) {
+    // Wrappers to fire functions that live in the parent component
     const deleteWrapper = function (e) {
         e.stopPropagation();
         deleteHandler();

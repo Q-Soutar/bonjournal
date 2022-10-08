@@ -27,7 +27,9 @@ const StyledTimelineEntry = styled(TimelineItem)(({ theme }) => ({
     }
 }));
 
+// Actualy container for the entries. Arranges the card, along with supporting elements.
 const TimelineEntry = function ({ entry, tags, deleteEntry, editEntry }) {
+    // State, to control whether the card is in collapsed or expanded state.
     const [expanded, changeExpand] = useState(false);
     const toggleExpand = function () {
         changeExpand(!expanded);
