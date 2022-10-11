@@ -19,7 +19,7 @@ export const SIGN_IN_BASE_URL = "https://identitytoolkit.googleapis.com/v1/";
 export const REFRESH_BASE_URL = "https://securetoken.googleapis.com/v1/";
 export const SIGN_IN_PATH = "accounts:signInWithPassword?key=";
 export const REFRESH_PATH = "token?key=";
-export const API_KEY = "AIzaSyCHDtn6M4QZ1XbL50d1HDFxK4ZrjvkQWUs";
+export const API_KEY = "";
 
 // TL = "top-level"
 export const DB_URL_BASE =
